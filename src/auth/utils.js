@@ -1,5 +1,3 @@
-import useJwt from '@/auth/jwt/useJwt'
-
 /**
  * Return if user is logged in
  * This is completely up to you and how you want to store the token in your frontend application
@@ -7,7 +5,8 @@ import useJwt from '@/auth/jwt/useJwt'
  */
 // eslint-disable-next-line arrow-body-style
 export const isUserLoggedIn = () => {
-  return localStorage.getItem('userData') && localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName)
+  // TODO AUTH USE MAYBE
+  return localStorage.getItem('userData')
 }
 
 export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
