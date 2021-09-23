@@ -40,6 +40,11 @@ export default [
     icon: 'FileIcon',
   },
   {
+    title: 'Register',
+    route: 'register',
+    icon: 'FileIcon',
+  },
+  {
     title: '404',
     route: 'error-404',
     icon: 'FileIcon',
