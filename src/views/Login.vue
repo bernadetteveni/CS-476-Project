@@ -137,7 +137,7 @@
 
           <b-card-text class="text-center mt-2">
             <span>New on our platform? </span>
-            <b-link :to="{name:'page-auth-register-v2'}">
+            <b-link :to="{name:'register'}">
               <span>&nbsp;Create an account</span>
             </b-link>
           </b-card-text>
@@ -226,7 +226,7 @@ export default {
       email,
     }
   },
-  computed: {
+  computed: { // Gets called every time any of the varibales inside changes
     passwordToggleIcon() {
       return this.passwordFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
     },
@@ -243,14 +243,20 @@ export default {
     validationForm() {
       this.$refs.loginValidation.validate().then(success => {
         if (success) {
-          this.$toast({
-            component: ToastificationContent,
-            props: {
-              title: 'Form Submitted',
-              icon: 'EditIcon',
-              variant: 'success',
-            },
-          })
+          // TODO LOGIN PERSON WITH 
+          this.userEmail
+          this.password
+
+          // this.$toast({
+          //   component: ToastificationContent,
+          //   props: {
+          //     title: 'Form Submitted',
+          //     icon: 'EditIcon',
+          //     variant: 'success',
+          //   },
+          // })
+
+          
         }
       })
     },
