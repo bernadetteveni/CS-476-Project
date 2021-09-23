@@ -39,6 +39,77 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/student-dashboard',
+      name: 'student-dashboard',
+      component: () => import('@/views/SecondPage.vue'), // TODO
+      meta: {
+        pageTitle: 'Student Dashboard',
+        breadcrumb: [
+          {
+            text: 'Student Dashboard',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/create-appointment',
+      name: 'create-appointment',
+      component: () => import('@/views/SecondPage.vue'), // TODO
+      meta: {
+        pageTitle: 'Create Apoointment',
+        breadcrumb: [
+          {
+            text: 'Create Apoointment',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/live-chat-view',
+      name: 'live-chat-view',
+      component: () => import('@/views/SecondPage.vue'), // TODO
+      meta: {
+        pageTitle: 'Live Chat',
+        breadcrumb: [
+          {
+            text: 'Live Chat',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/employee-dashboard',
+      name: 'employee-dashboard',
+      component: () => import('@/views/SecondPage.vue'), // TODO
+      meta: {
+        pageTitle: 'Employee Dashboard',
+        breadcrumb: [
+          {
+            text: 'Employee Dashboard',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/employee-form',
+      name: 'employee-form',
+      component: () => import('@/views/SecondPage.vue'), // TODO
+      meta: {
+        pageTitle: 'Employee Form',
+        breadcrumb: [
+          {
+            text: 'Employee Form',
+            active: true,
+          },
+        ],
+      },
+    },
+
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/Login.vue'),
