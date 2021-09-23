@@ -7,19 +7,15 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
 
-
-
     "buildProd": "vue-cli-service build --mode production",
     "serveProd": "vue-cli-service serve --mode production",
-    "deployProdForce": "yarn run buildProd && firebase deploy -P production",
-    "deployProd": "if [ $(git branch --show-current) == master ] ;then yarn run  deployProdForce;else echo You must be on the MASTER branch to deploy to PRODUCTION ;fi",
-
+    "deployProdForce": "yarn run buildProd && firebase deploy",
+    
 
     "buildDev": "vue-cli-service build --mode development",
     "serveDev": "vue-cli-service serve --mode development",
-    "deployDevForce": "yarn run buildDev && firebase deploy -P development",
-    "deployDev": "if [ $(git branch --show-current) == develop ] ;then yarn run  deployDevForce;else echo You must be on the DEVELOP branch to deploy to DEVELOPMENT ;fi"
-   
+    "deployDevForce": "yarn run buildDev && firebase deploy"
+    
   },
   "dependencies": {
     "@casl/ability": "4.1.6",
