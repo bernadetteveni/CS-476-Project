@@ -41,7 +41,7 @@ const router = new VueRouter({
     {
       path: '/student-dashboard',
       name: 'student-dashboard',
-      component: () => import('@/views/SecondPage.vue'), // TODO
+      component: () => import('@/views/StudentDash.vue'),
       meta: {
         pageTitle: 'Student Dashboard',
         breadcrumb: [
@@ -55,7 +55,7 @@ const router = new VueRouter({
     {
       path: '/create-appointment',
       name: 'create-appointment',
-      component: () => import('@/views/SecondPage.vue'), // TODO
+      component: () => import('@/views/CreateAppointment.vue'), 
       meta: {
         pageTitle: 'Create Apoointment',
         breadcrumb: [
@@ -69,7 +69,7 @@ const router = new VueRouter({
     {
       path: '/live-chat-view',
       name: 'live-chat-view',
-      component: () => import('@/views/SecondPage.vue'), // TODO
+      component: () => import('@/views/LiveChat.vue'), 
       meta: {
         pageTitle: 'Live Chat',
         breadcrumb: [
@@ -83,7 +83,7 @@ const router = new VueRouter({
     {
       path: '/employee-dashboard',
       name: 'employee-dashboard',
-      component: () => import('@/views/SecondPage.vue'), // TODO
+      component: () => import('@/views/EmployeeDash.vue'),
       meta: {
         pageTitle: 'Employee Dashboard',
         breadcrumb: [
@@ -97,7 +97,7 @@ const router = new VueRouter({
     {
       path: '/employee-form',
       name: 'employee-form',
-      component: () => import('@/views/SecondPage.vue'), // TODO
+      component: () => import('@/views/EmployeeForm.vue'), 
       meta: {
         pageTitle: 'Employee Form',
         breadcrumb: [
@@ -113,6 +113,14 @@ const router = new VueRouter({
       path: '/login',
       name: 'login',
       component: () => import('@/views/Login.vue'),
+      meta: {
+        layout: 'full',
+      },
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/views/Register.vue'),
       meta: {
         layout: 'full',
       },
