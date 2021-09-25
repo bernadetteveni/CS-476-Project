@@ -82,7 +82,8 @@
 
         <b-dropdown-divider />
 
-        <b-dropdown-item link-class="d-flex align-items-center">
+        <b-dropdown-item link-class="d-flex align-items-center" 
+        @click="logout">
           <feather-icon
             size="16"
             icon="LogOutIcon"
@@ -100,6 +101,7 @@ import {
   BLink, BNavbarNav, BNavItemDropdown, BDropdownItem, BDropdownDivider, BAvatar,
 } from 'bootstrap-vue'
 import DarkToggler from '@core/layouts/components/app-navbar/components/DarkToggler.vue'
+import {getAuth, signOut} from 'firebase/auth'
 
 export default {
   components: {
@@ -118,6 +120,32 @@ export default {
       type: Function,
       default: () => {},
     },
+  },
+  methods: {
+    logout() {
+      console.log("logging out")
+      const auth = getAuth();
+      signOut(auth).then(()=>{
+        // Sign out successful
+        // Remove userData from localStorage
+        // ? You just removed token from localStorage. If you like, you can also make API call to backend to blacklist used token
+        //localStorage.removeItem()
+        //localStorage.removeItem()
+        // Remove userData from localStorage
+        //localStorage.removeItem('userData')
+
+        // Reset ability
+        //this.$ability.update(initialAbility)
+
+        // Redirect to login page
+        this.$router.push({ name: 'login' })
+        console.log("successfully logged out");
+      }).catch((error)=>{
+        // Error
+    console.log(error.message,"ERROR logging out.")
+
+    })
+    }
   },
 }
 </script>

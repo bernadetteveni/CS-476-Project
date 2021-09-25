@@ -6,9 +6,9 @@
         <VuexyLogo />
 
         <h2 class="brand-text text-primary ml-1">UR QnA &emsp;</h2>
-        <b-nav-item @click="skin = isDark ? 'light' : 'dark'">
+        <div @click="skin = isDark ? 'light' : 'dark'">
           <feather-icon size="21" :icon="`${isDark ? 'Sun' : 'Moon'}Icon`" />
-        </b-nav-item>
+        </div>
       </b-link>
       <!-- /Brand logo-->
 
@@ -60,7 +60,7 @@
               <b-form-group>
                 <div class="d-flex justify-content-between">
                   <label for="login-password">Password</label>
-                  <b-link :to="{ name: 'auth-forgot-password-v2' }">
+                  <b-link :to="{ name: 'forgot-password' }">
                     <small>Forgot Password?</small>
                   </b-link>
                 </div>
@@ -92,17 +92,6 @@
                   </b-input-group>
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
-              </b-form-group>
-
-              <!-- checkbox -->
-              <b-form-group>
-                <b-form-checkbox
-                  id="remember-me"
-                  v-model="status"
-                  name="checkbox-1"
-                >
-                  Remember Me
-                </b-form-checkbox>
               </b-form-group>
 
               <!-- submit buttons -->
@@ -156,7 +145,8 @@ import ToastificationContent from "@core/components/toastification/Toastificatio
 import { BFormRadio } from "bootstrap-vue";
 import useAppConfig from "@core/app-config/useAppConfig";
 import { computed } from "@vue/composition-api";
-import { BNavItem } from "bootstrap-vue";
+import { getAuth, setPersistence, signInWithEmailAndPassword ,browserSessionPersistence} from '@firebase/auth';
+import router from '@/router';
 
 export default {
   setup() {
@@ -221,6 +211,27 @@ export default {
           // TODO LOGIN PERSON WITH
           this.userEmail;
           this.password;
+          const auth = getAuth();
+          setPersistence(auth, browserSessionPersistence).then(()=>{
+            signInWithEmailAndPassword(auth, this.userEmail, this.password)
+          .then((userCredential)=>{
+            const user = userCredential.user;
+            //TODO read user data
+            console.log(user);
+            router.push({ name: 'home' })
+            }).catch((error)=>{
+              // Error for sign in with email
+              console.log(error.message);
+              console.log(error.code);
+              //TODO toastify
+            })
+          }).catch((error)=>{
+              // Error for setting persistence
+              console.log(error.message);
+              console.log(error.code);
+              //TODO toastify
+          })
+          
 
           // this.$toast({
           //   component: ToastificationContent,

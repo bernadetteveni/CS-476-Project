@@ -6,6 +6,9 @@ import router from './router'
 import store from './store'
 import App from './App.vue'
 
+// Import firebase
+import '@/firebaseConfig'
+
 // Global Components
 import './global-components'
 

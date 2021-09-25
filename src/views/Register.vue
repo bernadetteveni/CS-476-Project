@@ -6,9 +6,9 @@
         <logo />
 
         <h2 class="brand-text text-primary ml-1">UR QnA &emsp;</h2>
-        <b-nav-item @click="skin = isDark ? 'light' : 'dark'">
+        <div @click="skin = isDark ? 'light' : 'dark'">
           <feather-icon size="21" :icon="`${isDark ? 'Sun' : 'Moon'}Icon`" />
-        </b-nav-item>
+        </div>
       </b-link>
       <!-- /Brand logo-->
 
@@ -80,7 +80,7 @@
                   #default="{ errors }"
                   name="Email"
                   vid="email"
-                  rules="required|email"
+                  rules="required|email|ureginaEmail"
                 >
                   <b-form-input
                     id="register-email"
@@ -142,9 +142,27 @@
                   Employee
                 </b-form-radio>
               </div>
-              <span>
-                    {{SelectedStudentOrEmployee}}
-              </span>
+
+            <!-- ID  -->
+              <b-form-group label-for="ID">
+                <label>{{SelectedStudentOrEmployee}} ID</label>
+                <validation-provider
+                  #default="{ errors }"
+                  name="ID"
+                  vid="ID"
+                  rules="required|digits:9"
+                >
+                  <b-form-input
+                    id="ID"
+                    v-model="ID"
+                    name="ID"
+                    :state="errors.length > 0 ? false : null"
+                    placeholder=""
+                  />
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
+              </b-form-group>
+              
               <b-form-group>
                 <b-form-checkbox
                   id="register-privacy-policy"
@@ -181,7 +199,17 @@
 
 <script>
 /* eslint-disable global-require */
-import { ValidationProvider, ValidationObserver } from "vee-validate";
+import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
+
+extend('ureginaEmail', {
+  validate(value){
+    if (value) {
+      return /^[A-Za-z0-9._%+-]+@uregina.ca$/.test(value);
+    }
+    return false;
+  },
+  message: 'Please enter a valid @uregina.ca email.',
+})
 import Logo from "@core/layouts/components/Logo.vue";
 import {
   BRow,
@@ -204,7 +232,8 @@ import store from "@/store/index";
 import { BFormRadio } from "bootstrap-vue";
 import useAppConfig from "@core/app-config/useAppConfig";
 import { computed } from "@vue/composition-api";
-import { BNavItem } from "bootstrap-vue";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import router from '@/router';
 
 export default {
   setup() {
@@ -244,6 +273,7 @@ export default {
       userEmail: "",
       password: "",
       SelectedStudentOrEmployee: "",
+      ID: "",
       sideImg: require("@/assets/images/pages/UR_Logo_Primary_Black.png"),
       required,
     };
@@ -273,25 +303,37 @@ export default {
     register() {
       this.$refs.registerForm.validate().then((success) => {
         if (success) {
-          useJwt
-            .register({
-              username: this.username,
-              email: this.userEmail,
-              password: this.password,
-            })
-            .then((response) => {
-              useJwt.setToken(response.data.accessToken);
-              useJwt.setRefreshToken(response.data.refreshToken);
-              localStorage.setItem(
-                "userData",
-                JSON.stringify(response.data.userData)
-              );
-              this.$ability.update(response.data.userData.ability);
-              this.$router.push("/");
-            })
-            .catch((error) => {
-              this.$refs.registerForm.setErrors(error.response.data.error);
-            });
+          const auth = getAuth();
+          createUserWithEmailAndPassword(auth, this.userEmail, this.password).then((userCredential)=>{
+            // Signed in
+            const user = userCredential.user;
+            console.log(user);
+            router.push({ name: 'home' })
+            //TODO save all user data under 'users' collection
+          }).catch((error)=>{
+            console.log(error.code);
+            console.log(error.message);
+            //TODO toastify
+          })
+          // useJwt
+          //   .register({
+          //     username: this.username,
+          //     email: this.userEmail,
+          //     password: this.password,
+          //   })
+          //   .then((response) => {
+          //     useJwt.setToken(response.data.accessToken);
+          //     useJwt.setRefreshToken(response.data.refreshToken);
+          //     localStorage.setItem(
+          //       "userData",
+          //       JSON.stringify(response.data.userData)
+          //     );
+          //     this.$ability.update(response.data.userData.ability);
+          //     this.$router.push("/");
+          //   })
+          //   .catch((error) => {
+          //     this.$refs.registerForm.setErrors(error.response.data.error);
+          //   });
         }
       });
     },

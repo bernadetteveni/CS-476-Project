@@ -1,7 +1,8 @@
 import firebase from 'firebase/app'
-import 'firebase/firestore'
-import 'firebase/storage'
+// import 'firebase/firestore'
+// import 'firebase/storage'
 
+import { initializeApp } from 'firebase/app';
 // Initialize Firebase
 
 const firebaseConfig = {
@@ -14,32 +15,32 @@ const firebaseConfig = {
   };
 
 
-firebase.initializeApp(firebaseConfig)
+  const app = initializeApp(firebaseConfig);
 
 // const performance = firebase.performance()
 // const analytics = firebase.analytics()
 
-const db = firebase.firestore()
+// const db = firebase.firestore()
 
-// firebase collections
-const usersCollection = db.collection('users')
-const postsCollection = db.collection('posts')
-const commentsCollection = db.collection('comments')
-const likesCollection = db.collection('likes')
+// // firebase collections
+// const usersCollection = db.collection('users')
+// const postsCollection = db.collection('posts')
+// const commentsCollection = db.collection('comments')
+// const likesCollection = db.collection('likes')
 
-// Create a storage reference from our storage service
-const storageRef = firebase.storage().ref()
-// Create a child reference
-const avatarsRef = storageRef.child('Avatars')
+// // Create a storage reference from our storage service
+// const storageRef = firebase.storage().ref()
+// // Create a child reference
+// const avatarsRef = storageRef.child('Avatars')
 
 export {
-  storageRef,
-  avatarsRef,
-  db,
-  usersCollection,
-  postsCollection,
-  commentsCollection,
-  likesCollection,
+  // storageRef,
+  // avatarsRef,
+  // db,
+  // usersCollection,
+  // postsCollection,
+  // commentsCollection,
+  // likesCollection,
   // performance,
   // analytics
 }

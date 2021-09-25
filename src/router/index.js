@@ -108,7 +108,14 @@ const router = new VueRouter({
         ],
       },
     },
-
+    {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: () => import('@/views/Forgot.vue'),
+      meta: {
+        layout: 'full',
+      },
+    },
     {
       path: '/login',
       name: 'login',
@@ -149,5 +156,38 @@ router.afterEach(() => {
     appLoading.style.display = 'none'
   }
 })
+
+// TODO ADD LATER
+// router.beforeEach((to, _, next) => {
+//   firebase.auth().onAuthStateChanged(isLoggedIn => {
+    
+//     // Redirect to login if not logged in
+//     if (!isLoggedIn) return next({ name: 'login' })
+
+//     // Redirect if logged in
+//     if (to.meta.redirectIfLoggedIn && isLoggedIn) {
+//       // TODO get user data here from the firebase use store
+//       const userData = getUserData()
+//       return next({ name: 'home' })
+//     }
+
+//     return next()
+//   })
+// })
+
+// import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+// const auth = getAuth();
+// onAuthStateChanged(auth, (user) => {
+//   if (user) {
+//     // User is signed in, see docs for a list of available properties
+//     // https://firebase.google.com/docs/reference/js/firebase.User
+//     const uid = user.uid;
+//     // ...
+//   } else {
+//     // User is signed out
+//     // ...
+//   }
+// });
 
 export default router
