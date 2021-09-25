@@ -6,16 +6,12 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-
     "buildProd": "vue-cli-service build --mode production",
     "serveProd": "vue-cli-service serve --mode production",
     "deployProdForce": "yarn run buildProd && firebase deploy",
-    
-
     "buildDev": "vue-cli-service build --mode development",
     "serveDev": "vue-cli-service serve --mode development",
     "deployDevForce": "yarn run buildDev && firebase deploy"
-    
   },
   "dependencies": {
     "@casl/ability": "4.1.6",
@@ -38,6 +34,7 @@
     "chart.js": "2.9.4",
     "core-js": "3.8.1",
     "echarts": "4.8.0",
+    "firebase": "^9.1.0",
     "jsonwebtoken": "8.5.1",
     "leaflet": "1.6.0",
     "portal-vue": "2.1.7",
