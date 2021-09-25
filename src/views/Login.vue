@@ -1,63 +1,45 @@
 <template>
   <div class="auth-wrapper auth-v2">
     <b-row class="auth-inner m-0">
-
       <!-- Brand logo-->
       <b-link class="brand-logo">
-        <vuexy-logo />
-        <h2 class="brand-text text-primary ml-1">
-          Vuexy
-        </h2>
+        <VuexyLogo />
+
+        <h2 class="brand-text text-primary ml-1">UR QnA &emsp;</h2>
+        <b-nav-item @click="skin = isDark ? 'light' : 'dark'">
+          <feather-icon size="21" :icon="`${isDark ? 'Sun' : 'Moon'}Icon`" />
+        </b-nav-item>
       </b-link>
       <!-- /Brand logo-->
 
       <!-- Left Text-->
-      <b-col
-        lg="8"
-        class="d-none d-lg-flex align-items-center p-5"
-      >
-        <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-          <b-img
-            fluid
-            :src="imgUrl"
-            alt="Login V2"
-          />
+      <b-col lg="8" class="d-none d-lg-flex align-items-center p-5">
+        <div
+          class="w-100 d-lg-flex align-items-center justify-content-center px-5"
+        >
+          <b-img fluid :src="imgUrl" alt="Login V2" />
         </div>
       </b-col>
       <!-- /Left Text-->
 
       <!-- Login-->
-      <b-col
-        lg="4"
-        class="d-flex align-items-center auth-bg px-2 p-lg-5"
-      >
-        <b-col
-          sm="8"
-          md="6"
-          lg="12"
-          class="px-xl-2 mx-auto"
-        >
+      <b-col lg="4" class="d-flex align-items-center auth-bg px-2 p-lg-5">
+        <b-col sm="8" md="6" lg="12" class="px-xl-2 mx-auto">
           <b-card-title
             title-tag="h2"
-            class="font-weight-bold mb-1"
+            class="brand-text text-primary font-weight-bold mb-1"
           >
-            Welcome to Vuexy! 👋
+            Welcome to UR QnA! 👋
           </b-card-title>
           <b-card-text class="mb-2">
-            Please sign-in to your account and start the adventure
+            Please sign-in to your account
           </b-card-text>
 
           <!-- form -->
           <validation-observer ref="loginValidation">
-            <b-form
-              class="auth-login-form mt-2"
-              @submit.prevent
-            >
+            <b-form class="auth-login-form mt-2" @submit.prevent>
               <!-- email -->
-              <b-form-group
-                label="Email"
-                label-for="login-email"
-              >
+              <b-form-group label="Email" label-for="login-email">
                 <validation-provider
                   #default="{ errors }"
                   name="Email"
@@ -66,7 +48,7 @@
                   <b-form-input
                     id="login-email"
                     v-model="userEmail"
-                    :state="errors.length > 0 ? false:null"
+                    :state="errors.length > 0 ? false : null"
                     name="login-email"
                     placeholder="john@example.com"
                   />
@@ -78,7 +60,7 @@
               <b-form-group>
                 <div class="d-flex justify-content-between">
                   <label for="login-password">Password</label>
-                  <b-link :to="{name:'auth-forgot-password-v2'}">
+                  <b-link :to="{ name: 'auth-forgot-password-v2' }">
                     <small>Forgot Password?</small>
                   </b-link>
                 </div>
@@ -89,12 +71,12 @@
                 >
                   <b-input-group
                     class="input-group-merge"
-                    :class="errors.length > 0 ? 'is-invalid':null"
+                    :class="errors.length > 0 ? 'is-invalid' : null"
                   >
                     <b-form-input
                       id="login-password"
                       v-model="password"
-                      :state="errors.length > 0 ? false:null"
+                      :state="errors.length > 0 ? false : null"
                       class="form-control-merge"
                       :type="passwordFieldType"
                       name="login-password"
@@ -137,65 +119,53 @@
 
           <b-card-text class="text-center mt-2">
             <span>New on our platform? </span>
-            <b-link :to="{name:'register'}">
+            <b-link :to="{ name: 'register' }">
               <span>&nbsp;Create an account</span>
             </b-link>
           </b-card-text>
-
-          <!-- divider -->
-          <div class="divider my-2">
-            <div class="divider-text">
-              or
-            </div>
-          </div>
-
-          <!-- social buttons -->
-          <div class="auth-footer-btn d-flex justify-content-center">
-            <b-button
-              variant="facebook"
-              href="javascript:void(0)"
-            >
-              <feather-icon icon="FacebookIcon" />
-            </b-button>
-            <b-button
-              variant="twitter"
-              href="javascript:void(0)"
-            >
-              <feather-icon icon="TwitterIcon" />
-            </b-button>
-            <b-button
-              variant="google"
-              href="javascript:void(0)"
-            >
-              <feather-icon icon="MailIcon" />
-            </b-button>
-            <b-button
-              variant="github"
-              href="javascript:void(0)"
-            >
-              <feather-icon icon="GithubIcon" />
-            </b-button>
-          </div>
         </b-col>
       </b-col>
-    <!-- /Login-->
+      <!-- /Login-->
     </b-row>
   </div>
 </template>
 
 <script>
 /* eslint-disable global-require */
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
-import VuexyLogo from '@core/layouts/components/Logo.vue'
+import { ValidationProvider, ValidationObserver } from "vee-validate";
+import VuexyLogo from "@core/layouts/components/Logo.vue";
 import {
-  BRow, BCol, BLink, BFormGroup, BFormInput, BInputGroupAppend, BInputGroup, BFormCheckbox, BCardText, BCardTitle, BImg, BForm, BButton,
-} from 'bootstrap-vue'
-import { required, email } from '@validations'
-import { togglePasswordVisibility } from '@core/mixins/ui/forms'
-import store from '@/store/index'
-import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+  BRow,
+  BCol,
+  BLink,
+  BFormGroup,
+  BFormInput,
+  BInputGroupAppend,
+  BInputGroup,
+  BFormCheckbox,
+  BCardText,
+  BCardTitle,
+  BImg,
+  BForm,
+  BButton,
+} from "bootstrap-vue";
+import { required, email } from "@validations";
+import { togglePasswordVisibility } from "@core/mixins/ui/forms";
+import store from "@/store/index";
+import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
+import { BFormRadio } from "bootstrap-vue";
+import useAppConfig from "@core/app-config/useAppConfig";
+import { computed } from "@vue/composition-api";
+import { BNavItem } from "bootstrap-vue";
 
 export default {
+  setup() {
+    const { skin } = useAppConfig();
+
+    const isDark = computed(() => skin.value === "dark");
+
+    return { skin, isDark };
+  },
   components: {
     BRow,
     BCol,
@@ -217,35 +187,40 @@ export default {
   mixins: [togglePasswordVisibility],
   data() {
     return {
-      status: '',
-      password: '',
-      userEmail: '',
-      sideImg: require('@/assets/images/pages/login-v2.svg'),
+      status: "",
+      password: "",
+      userEmail: "",
+      sideImg: require("@/assets/images/pages/UR_Logo_Primary_Black.png"),
       // validation rulesimport store from '@/store/index'
       required,
       email,
-    }
+    };
   },
-  computed: { // Gets called every time any of the varibales inside changes
+  computed: {
+    // Gets called every time any of the varibales inside changes
     passwordToggleIcon() {
-      return this.passwordFieldType === 'password' ? 'EyeIcon' : 'EyeOffIcon'
+      return this.passwordFieldType === "password" ? "EyeIcon" : "EyeOffIcon";
     },
     imgUrl() {
-      if (store.state.appConfig.layout.skin === 'dark') {
+      if (store.state.appConfig.layout.skin === "dark") {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.sideImg = require('@/assets/images/pages/login-v2-dark.svg')
-        return this.sideImg
+        this.sideImg = require("@/assets/images/pages/UR_Logo_Primary_Reverse_White.png");
+        return this.sideImg;
+      } else if (store.state.appConfig.layout.skin === "light") {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.sideImg = require("@/assets/images/pages/UR_Logo_Primary_Black.png");
+        return this.sideImg;
       }
-      return this.sideImg
+      return this.sideImg;
     },
   },
   methods: {
     validationForm() {
-      this.$refs.loginValidation.validate().then(success => {
+      this.$refs.loginValidation.validate().then((success) => {
         if (success) {
-          // TODO LOGIN PERSON WITH 
-          this.userEmail
-          this.password
+          // TODO LOGIN PERSON WITH
+          this.userEmail;
+          this.password;
 
           // this.$toast({
           //   component: ToastificationContent,
@@ -255,15 +230,13 @@ export default {
           //     variant: 'success',
           //   },
           // })
-
-          
         }
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss">
-@import '@core/scss/vue/pages/page-auth.scss';
+@import "@core/scss/vue/pages/page-auth.scss";
 </style>

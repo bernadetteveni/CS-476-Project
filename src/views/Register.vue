@@ -15,8 +15,7 @@
       <!-- Left Text-->
       <b-col lg="8" class="d-none d-lg-flex align-items-center p-5">
         <div
-          class="w-100 d-lg-flex align-items-center justify-content-center px-5"
-        >
+          class="w-100 d-lg-flex align-items-center justify-content-center px-5">
           <b-img fluid :src="imgUrl" alt="Register V2" />
         </div>
       </b-col>
@@ -25,6 +24,15 @@
       <!-- Register-->
       <b-col lg="4" class="d-flex align-items-center auth-bg px-2 p-lg-5">
         <b-col sm="8" md="6" lg="12" class="px-xl-2 mx-auto">
+           <b-card-title
+            title-tag="h2"
+            class="brand-text text-primary font-weight-bold mb-1"
+          >
+            Welcome to UR QnA! 👋
+          </b-card-title>
+          <b-card-text class="mb-2">
+            Please register your account
+          </b-card-text>
           <!-- form -->
           <validation-observer ref="registerForm" #default="{ invalid }">
             <b-form class="auth-register-form mt-2" @submit.prevent="register">
