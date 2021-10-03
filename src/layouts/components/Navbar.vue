@@ -105,8 +105,7 @@ import {getAuth, signOut} from 'firebase/auth'
 import store from '@/store'
 
 export default {
-  setup() {
-    console.log("settubg up navbar")
+  setup() {    
     store.dispatch('user/getUserProfile')
   },
   components: {

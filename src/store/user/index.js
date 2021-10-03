@@ -1,6 +1,6 @@
 import { usersCollection } from "@/firebaseConfig"
-import {getDocs} from 'firebase/firestore'
-
+import {getDocs,query, where} from 'firebase/firestore'
+import { getAuth } from "firebase/auth";
 
 export default {
   namespaced: true, // names will not collide with other modules
@@ -26,21 +26,23 @@ export default {
   },
   actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
     updateText ({ commit }) {
-        // do some firebase stuff
         commit('UPDATE_TEXT', "updated 222222")
       },
       async getUserProfile ({ commit }) {
+        var email = '1'
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user !== null) {
+          email = user.auth.currentUser.email;
+        }
         console.log("getting a user profile")
-        // do some firebase stuff
-        const querySnapshot = await getDocs(usersCollection);
-        
-        querySnapshot.forEach((doc) => {
-            // console.log(`${doc.id} => ${doc.data()}`);
-            commit('SET_USER_PROFILE', doc.data())
+        console.log("Email of a person logged in", email)
+        const q = query(usersCollection, where("userEmail", "==", email));
 
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          commit('SET_USER_PROFILE', doc.data())
         });
       }
   },
 }
-/* 
-Component would call action GET_USER_DATA > mutation SET_USER_DATA > then call getter GET_USER_DATA > */

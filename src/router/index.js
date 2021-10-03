@@ -44,6 +44,7 @@ const router = new VueRouter({
       component: () => import('@/views/StudentDash.vue'),
       meta: {
         pageTitle: 'Student Dashboard',
+        rule: 'studentOnly',
         breadcrumb: [
           {
             text: 'Student Dashboard',
@@ -86,6 +87,7 @@ const router = new VueRouter({
       component: () => import('@/views/EmployeeDash.vue'),
       meta: {
         pageTitle: 'Employee Dashboard',
+        rule: 'employeeOnly',
         breadcrumb: [
           {
             text: 'Employee Dashboard',
@@ -99,6 +101,7 @@ const router = new VueRouter({
       name: 'employee-form',
       component: () => import('@/views/EmployeeForm.vue'), 
       meta: {
+        rule: 'employeeOnly',
         pageTitle: 'Employee Form',
         breadcrumb: [
           {
@@ -114,6 +117,7 @@ const router = new VueRouter({
       component: () => import('@/views/Forgot.vue'),
       meta: {
         layout: 'full',
+        rule: 'public',
       },
     },
     {
@@ -122,6 +126,7 @@ const router = new VueRouter({
       component: () => import('@/views/Login.vue'),
       meta: {
         layout: 'full',
+        rule: 'public',
       },
     },
     {
@@ -130,6 +135,7 @@ const router = new VueRouter({
       component: () => import('@/views/Register.vue'),
       meta: {
         layout: 'full',
+        rule: 'public',
       },
     },
     {
@@ -138,6 +144,7 @@ const router = new VueRouter({
       component: () => import('@/views/error/Error404.vue'),
       meta: {
         layout: 'full',
+        rule: 'public',
       },
     },
     {
@@ -157,37 +164,31 @@ router.afterEach(() => {
   }
 })
 
-// TODO ADD LATER
-// router.beforeEach((to, _, next) => {
-//   firebase.auth().onAuthStateChanged(isLoggedIn => {
-    
-//     // Redirect to login if not logged in
-//     if (!isLoggedIn) return next({ name: 'login' })
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import store from '@/store'
 
-//     // Redirect if logged in
-//     if (to.meta.redirectIfLoggedIn && isLoggedIn) {
-//       // TODO get user data here from the firebase use store
-//       const userData = getUserData()
-//       return next({ name: 'home' })
-//     }
+router.beforeEach((to, _, next) => {
+  // console.log(store.state.user.user.SelectedStudentOrEmployee)
+  const auth = getAuth();
+  onAuthStateChanged(auth, (isLoggedIn) => {
+      if (to.meta.rule !== 'public' && !isLoggedIn) {
+         next({ name: 'login' }) 
+      }
 
-//     return next()
-//   })
-// })
+      if (to.meta.rule == "studentOnly" && store.state.user.user.SelectedStudentOrEmployee != "Student") {
+        console.log("Not a student going to a student only page")
+        next({ name: 'error-404' }) 
+      }
 
-// import { getAuth, onAuthStateChanged } from "firebase/auth";
+      if (to.meta.rule == "employeeOnly" && store.state.user.user.SelectedStudentOrEmployee != "Employee") {
+        console.log("Not employee going to a employee page")
+        next({ name: 'error-404' }) 
+      }
+       next ()
+  })
+})
 
-// const auth = getAuth();
-// onAuthStateChanged(auth, (user) => {
-//   if (user) {
-//     // User is signed in, see docs for a list of available properties
-//     // https://firebase.google.com/docs/reference/js/firebase.User
-//     const uid = user.uid;
-//     // ...
-//   } else {
-//     // User is signed out
-//     // ...
-//   }
-// });
+
+
 
 export default router
