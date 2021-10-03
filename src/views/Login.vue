@@ -208,7 +208,6 @@ export default {
     validationForm() {
       this.$refs.loginValidation.validate().then((success) => {
         if (success) {
-          // TODO LOGIN PERSON WITH
           this.userEmail;
           this.password;
           const auth = getAuth();
@@ -216,8 +215,7 @@ export default {
             signInWithEmailAndPassword(auth, this.userEmail, this.password)
           .then((userCredential)=>{
             const user = userCredential.user;
-            //TODO read user data
-            console.log(user);
+            //console.log(user);
             router.push({ name: 'home' })
             }).catch((error)=>{
               // Error for sign in with email

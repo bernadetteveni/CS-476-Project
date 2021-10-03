@@ -30,9 +30,9 @@
         <template #button-content>
           <div class="d-sm-flex d-none user-nav">
             <p class="user-name font-weight-bolder mb-0">
-              John Doe
+              {{userName}}
             </p>
-            <span class="user-status">Admin</span>
+            <span class="user-status">{{role}}</span>
           </div>
           <b-avatar
             size="40"
@@ -102,8 +102,13 @@ import {
 } from 'bootstrap-vue'
 import DarkToggler from '@core/layouts/components/app-navbar/components/DarkToggler.vue'
 import {getAuth, signOut} from 'firebase/auth'
+import store from '@/store'
 
 export default {
+  setup() {
+    console.log("settubg up navbar")
+    store.dispatch('user/getUserProfile')
+  },
   components: {
     BLink,
     BNavbarNav,
@@ -147,5 +152,13 @@ export default {
     })
     }
   },
+  computed: {
+    userName () {
+      return store.state.user.user.firstName + " " + store.state.user.user.lastName
+    },
+    role() {
+      return store.state.user.user.SelectedStudentOrEmployee
+    }
+  }
 }
 </script>
