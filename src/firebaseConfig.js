@@ -1,5 +1,5 @@
-import firebase from 'firebase/app'
-// import 'firebase/firestore'
+import 'firebase/firestore'
+import { getFirestore ,collection } from "firebase/firestore"
 // import 'firebase/storage'
 
 import { initializeApp } from 'firebase/app';
@@ -20,10 +20,10 @@ const firebaseConfig = {
 // const performance = firebase.performance()
 // const analytics = firebase.analytics()
 
-// const db = firebase.firestore()
+const db = getFirestore()
 
-// // firebase collections
-// const usersCollection = db.collection('users')
+// firebase collections
+const usersCollection = collection(db,'users')
 // const postsCollection = db.collection('posts')
 // const commentsCollection = db.collection('comments')
 // const likesCollection = db.collection('likes')
@@ -36,8 +36,8 @@ const firebaseConfig = {
 export {
   // storageRef,
   // avatarsRef,
-  // db,
-  // usersCollection,
+  db,
+  usersCollection,
   // postsCollection,
   // commentsCollection,
   // likesCollection,

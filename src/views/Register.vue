@@ -234,6 +234,9 @@ import useAppConfig from "@core/app-config/useAppConfig";
 import { computed } from "@vue/composition-api";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import router from '@/router';
+import { usersCollection } from "@/firebaseConfig";
+import { addDirToSelectors } from 'postcss-rtl/lib/selectors';
+import { addDoc } from '@firebase/firestore';
 
 export default {
   setup() {
@@ -300,16 +303,30 @@ export default {
     },
   },
   methods: {
-    register() {
-      this.$refs.registerForm.validate().then((success) => {
+    async register() {
+      this.$refs.registerForm.validate().then(async (success) => {
         if (success) {
           const auth = getAuth();
-          createUserWithEmailAndPassword(auth, this.userEmail, this.password).then((userCredential)=>{
+          createUserWithEmailAndPassword(auth, this.userEmail, this.password).then(async (userCredential)=>{
             // Signed in
             const user = userCredential.user;
-            console.log(user);
+            // console.log(user);
+
+            // Save all user data under 'users' collection
+            try{
+              const docRef = await addDoc(usersCollection, {
+                status: this.status,
+                firstName: this.firstName,
+                lastName: this.lastName,
+                userEmail: this.userEmail,
+                SelectedStudentOrEmployee: this.SelectedStudentOrEmployee,
+                ID: this.ID,
+              })
+              // console.log("Document written with ID ", docRef.ID)
+            } catch(e){
+              console.error("Error adding a document on register page to usersCollection ", e);
+            }
             router.push({ name: 'home' })
-            //TODO save all user data under 'users' collection
           }).catch((error)=>{
             console.log(error.code);
             console.log(error.message);
@@ -344,4 +361,4 @@ export default {
 
 <style lang="scss">
 @import "@core/scss/vue/pages/page-auth.scss";
-</style>
+ </style>
