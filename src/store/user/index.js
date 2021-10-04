@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth";
 export default {
   namespaced: true, // names will not collide with other modules
   state: {
-    TEST: 'from VUEX',
+    TEST: 'Student Dashboard',
     user: { // User Default Values
         firstName: '',
         avatar: '',
@@ -25,9 +25,6 @@ export default {
       },
   },
   actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
-    updateText ({ commit }) {
-        commit('UPDATE_TEXT', "updated 222222")
-      },
       async getUserProfile ({ commit }) {
         var email = '1'
         const auth = getAuth();
@@ -41,7 +38,11 @@ export default {
 
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
-          commit('SET_USER_PROFILE', doc.data())
+          commit('SET_USER_PROFILE', doc.data());
+          if(doc.data().SelectedStudentOrEmployee == "Employee"){
+            console.log(doc.data().SelectedStudentOrEmployee);
+            commit('UPDATE_TEXT', "Employee Dashboard");
+          }
         });
       }
   },
