@@ -87,7 +87,7 @@
                     v-model="userEmail"
                     name="register-email"
                     :state="errors.length > 0 ? false : null"
-                    placeholder="john@example.com"
+                    placeholder="john@uregina.ca"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -150,7 +150,7 @@
                   #default="{ errors }"
                   name="ID"
                   vid="ID"
-                  rules="required|digits:9"
+                  rules="required|digits:9|startsWith1or2"
                 >
                   <b-form-input
                     id="ID"
@@ -200,7 +200,15 @@
 <script>
 /* eslint-disable global-require */
 import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
-
+extend('startsWith1or2', {
+  validate(value){
+    if (value) {
+      return /^(1|2)([0-9]){8}/.test(value);
+    }
+    return false;
+  },
+  message: 'Please enter a valid ID',
+})
 extend('ureginaEmail', {
   validate(value){
     if (value) {
