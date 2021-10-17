@@ -50,7 +50,7 @@
                     v-model="userEmail"
                     :state="errors.length > 0 ? false : null"
                     name="login-email"
-                    placeholder="john@example.com"
+                    placeholder="john@uregina.ca"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
