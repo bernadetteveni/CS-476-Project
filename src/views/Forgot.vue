@@ -41,12 +41,15 @@
           <b-card-title class="mb-1">
             Forgot Password? 🔒
           </b-card-title>
-          <b-card-text class="mb-2">
+          <b-card-text class="mb-2" v-if="!emailSent">
             Enter your email and we'll send you instructions to reset your password
+          </b-card-text>
+          <b-card-text class="mb-2" v-if="emailSent">
+            Email sent
           </b-card-text>
 
           <!-- form -->
-          <validation-observer ref="simpleRules">
+          <validation-observer ref="simpleRules" v-if="!emailSent">
             <b-form
               class="auth-forgot-password-form mt-2"
               @submit.prevent="validationForm"
@@ -65,7 +68,7 @@
                     v-model="userEmail"
                     :state="errors.length > 0 ? false:null"
                     name="forgot-password-email"
-                    placeholder="john@example.com"
+                    placeholder="john@uregina.ca"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -82,7 +85,7 @@
           </validation-observer>
 
           <p class="text-center mt-2">
-            <b-link :to="{name:'auth-login'}">
+            <b-link :to="{name:'login'}">
               <feather-icon icon="ChevronLeftIcon" /> Back to login
             </b-link>
           </p>
@@ -103,6 +106,7 @@ import {
 import { required, email } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import store from '@/store/index'
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 export default {
   components: {
@@ -123,6 +127,7 @@ export default {
   data() {
     return {
       userEmail: '',
+      emailSent: false,
       sideImg: require('@/assets/images/pages/forgot-password-v2.svg'),
       // validation
       required,
@@ -143,14 +148,19 @@ export default {
     validationForm() {
       this.$refs.simpleRules.validate().then(success => {
         if (success) {
-          this.$toast({
-            component: ToastificationContent,
-            props: {
-              title: 'This is for UI purpose only.',
-              icon: 'EditIcon',
-              variant: 'success',
-            },
-          })
+          const auth = getAuth();
+          sendPasswordResetEmail(auth, this.userEmail)
+            .then(() => {
+              // Password reset email sent!
+              this.emailSent = true
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              // ..
+            });
+
+
         }
       })
     },
