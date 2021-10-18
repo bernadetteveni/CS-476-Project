@@ -20,7 +20,7 @@
         <b-button
           variant="primary"
           class="mb-2 btn-sm-block"
-          :to="{path:'/'}"
+          @click="goHome()"
         >
           Back to home
         </b-button>
@@ -42,6 +42,7 @@
 import { BLink, BButton, BImg } from 'bootstrap-vue'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
 import store from '@/store/index'
+import router from '@/router';
 
 export default {
   components: {
@@ -54,6 +55,16 @@ export default {
     return {
       downImg: require('@/assets/images/pages/error.svg'),
     }
+  },
+  methods: {
+  goHome() {
+    console.log("Going home")
+      if (store.state.user.user.SelectedStudentOrEmployee == "Student"){
+        router.push({ name: 'student-dashboard' })
+      } else {
+      router.push({ name: 'employee-dashboard' })
+      } 
+    },
   },
   computed: {
     imgUrl() {

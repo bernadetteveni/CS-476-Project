@@ -145,7 +145,7 @@ import ToastificationContent from "@core/components/toastification/Toastificatio
 import { BFormRadio } from "bootstrap-vue";
 import useAppConfig from "@core/app-config/useAppConfig";
 import { computed } from "@vue/composition-api";
-import { getAuth, setPersistence, signInWithEmailAndPassword ,browserSessionPersistence} from '@firebase/auth';
+import { getAuth, setPersistence, signInWithEmailAndPassword ,browserLocalPersistence} from '@firebase/auth';
 import router from '@/router';
 
 export default {
@@ -211,7 +211,7 @@ export default {
           this.userEmail;
           this.password;
           const auth = getAuth();
-          setPersistence(auth, browserSessionPersistence).then(()=>{
+          setPersistence(auth, browserLocalPersistence).then(()=>{
             signInWithEmailAndPassword(auth, this.userEmail, this.password)
           .then((userCredential)=>{
             const user = userCredential.user;

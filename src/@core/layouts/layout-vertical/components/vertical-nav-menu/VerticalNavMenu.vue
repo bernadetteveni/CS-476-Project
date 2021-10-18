@@ -145,7 +145,6 @@ export default {
     const { appName, appLogoImage } = $themeConfig.app
 
     const role = store.state.user.user.SelectedStudentOrEmployee
-    console.log("role",role)
     return {
       role,
       studentMenu,

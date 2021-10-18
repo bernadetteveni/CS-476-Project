@@ -29,6 +29,7 @@ export default {
   },
   actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
       async getUserProfile ({ commit }) {
+        console.log("Getting user profile")
         var email = '1'
         const auth = getAuth();
         const user = auth.currentUser;
