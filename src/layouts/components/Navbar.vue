@@ -105,15 +105,6 @@ import {getAuth, onAuthStateChanged,signOut} from 'firebase/auth'
 import store from '@/store'
 
 export default {
-  setup() {    
-//const auth = getAuth(); 
-   // onAuthStateChanged(auth, (user) => {
-   // if (user) {
-   //   store.dispatch('user/getUserProfile')
-   // } 
-   // });
-    
-  },
   components: {
     BLink,
     BNavbarNav,
@@ -133,27 +124,11 @@ export default {
   },
   methods: {
     logout() {
-      //console.log("logging out")
       const auth = getAuth();
       signOut(auth).then(()=>{
         // Sign out successful
-        // Remove userData from localStorage
-        // ? You just removed token from localStorage. If you like, you can also make API call to backend to blacklist used token
-        //localStorage.removeItem()
-        //localStorage.removeItem()
-        // Remove userData from localStorage
-        //localStorage.removeItem('userData')
-
-        // Reset ability
-        //this.$ability.update(initialAbility)
-
-        // Redirect to login page
-        //this.$router.push({ name: 'login' })
-       // console.log("successfully logged out");
       }).catch((error)=>{
-        // Error
     console.log(error.message,"ERROR logging out.")
-
     })
     }
   },

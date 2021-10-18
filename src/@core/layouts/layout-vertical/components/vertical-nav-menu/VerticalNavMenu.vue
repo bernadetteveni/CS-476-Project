@@ -72,9 +72,17 @@
       @ps-scroll-y="evt => { shallShadowBottom = evt.srcElement.scrollTop > 0 }"
     >
       <vertical-nav-menu-items
-        :items="navMenuItems"
+      v-if="role == 'Student' "
+        :items="studentMenu"
         class="navigation navigation-main"
       />
+
+      <vertical-nav-menu-items
+      v-else
+        :items="employeeMenu"
+        class="navigation navigation-main"
+      />
+
     </vue-perfect-scrollbar>
     <!-- /main menu content-->
   </div>
@@ -89,6 +97,9 @@ import useAppConfig from '@core/app-config/useAppConfig'
 import { $themeConfig } from '@themeConfig'
 import VerticalNavMenuItems from './components/vertical-nav-menu-items/VerticalNavMenuItems.vue'
 import useVerticalNavMenu from './useVerticalNavMenu'
+import studentMenu from '@/navigation/vertical/studentMenu.js'
+import employeeMenu from '@/navigation/vertical/employeeMenu.js'
+import store from "@/store/index";
 
 export default {
   components: {
@@ -133,7 +144,12 @@ export default {
     // App Name
     const { appName, appLogoImage } = $themeConfig.app
 
+    const role = store.state.user.user.SelectedStudentOrEmployee
+    console.log("role",role)
     return {
+      role,
+      studentMenu,
+      employeeMenu,
       navMenuItems,
       perfectScrollbarSettings,
       isVerticalMenuCollapsed,
