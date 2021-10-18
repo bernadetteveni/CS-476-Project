@@ -5,13 +5,16 @@ import { getAuth } from "firebase/auth";
 export default {
   namespaced: true, // names will not collide with other modules
   state: {
-    TEST: 'Student Dashboard',
+    TEST: 'Dashboard',
     user: { // User Default Values
         firstName: '',
         avatar: '',
     }
   },
   getters: {
+    getStudentOrEmployee : state => {
+      return state.SelectedStudentOrEmployee
+    }
     // doneTodos: state => {
     //   return state.todos.filter(todo => todo.done)
     // }
@@ -32,17 +35,16 @@ export default {
         if (user !== null) {
           email = user.auth.currentUser.email;
         }
-        console.log("getting a user profile")
-        console.log("Email of a person logged in", email)
+        
         const q = query(usersCollection, where("userEmail", "==", email));
 
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
           commit('SET_USER_PROFILE', doc.data());
-          if(doc.data().SelectedStudentOrEmployee == "Employee"){
-            console.log(doc.data().SelectedStudentOrEmployee);
-            commit('UPDATE_TEXT', "Employee Dashboard");
-          }
+        //   if(doc.data().SelectedStudentOrEmployee == "Employee"){
+        //     console.log(doc.data().SelectedStudentOrEmployee);
+        //     commit('UPDATE_TEXT', "Employee Dashboard");
+        //  }
         });
       }
   },

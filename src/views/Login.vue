@@ -216,7 +216,16 @@ export default {
           .then((userCredential)=>{
             const user = userCredential.user;
             //console.log(user);
-            router.push({ name: 'home' })
+            //TODO: 
+            store.dispatch('user/getUserProfile').then(() => {
+                if (store.state.user.user.SelectedStudentOrEmployee == "Student"){
+                  router.push({ name: 'student-dashboard' })
+                } else {
+                router.push({ name: 'employee-dashboard' })
+                } 
+            })
+
+            
             }).catch((error)=>{
               // Error for sign in with email
               console.log(error.message);

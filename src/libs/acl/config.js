@@ -4,5 +4,5 @@ export const initialAbility = [
     subject: 'all',
   },
 ]
-
+// MANAGE ALL is god access
 export const _ = undefined

@@ -101,12 +101,18 @@ import {
   BLink, BNavbarNav, BNavItemDropdown, BDropdownItem, BDropdownDivider, BAvatar,
 } from 'bootstrap-vue'
 import DarkToggler from '@core/layouts/components/app-navbar/components/DarkToggler.vue'
-import {getAuth, signOut} from 'firebase/auth'
+import {getAuth, onAuthStateChanged,signOut} from 'firebase/auth'
 import store from '@/store'
 
 export default {
   setup() {    
-    store.dispatch('user/getUserProfile')
+//const auth = getAuth(); 
+   // onAuthStateChanged(auth, (user) => {
+   // if (user) {
+   //   store.dispatch('user/getUserProfile')
+   // } 
+   // });
+    
   },
   components: {
     BLink,
@@ -127,7 +133,7 @@ export default {
   },
   methods: {
     logout() {
-      console.log("logging out")
+      //console.log("logging out")
       const auth = getAuth();
       signOut(auth).then(()=>{
         // Sign out successful
@@ -142,8 +148,8 @@ export default {
         //this.$ability.update(initialAbility)
 
         // Redirect to login page
-        this.$router.push({ name: 'login' })
-        console.log("successfully logged out");
+        //this.$router.push({ name: 'login' })
+       // console.log("successfully logged out");
       }).catch((error)=>{
         // Error
     console.log(error.message,"ERROR logging out.")

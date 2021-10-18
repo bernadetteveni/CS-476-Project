@@ -176,19 +176,17 @@ router.beforeEach((to, _, next) => {
       }
 
       if (to.meta.rule == "studentOnly" && store.state.user.user.SelectedStudentOrEmployee != "Student") {
-        console.log("Not a student going to a student only page")
+        //console.log("Not a student going to a student only page")
         next({ name: 'error-404' }) 
       }
 
       if (to.meta.rule == "employeeOnly" && store.state.user.user.SelectedStudentOrEmployee != "Employee") {
-        console.log("Not employee going to a employee page")
+        //console.log("Not employee going to a employee page")
         next({ name: 'error-404' }) 
       }
        next ()
   })
 })
-
-
 
 
 export default router

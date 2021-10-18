@@ -290,10 +290,6 @@ export default {
     };
   },
   computed: {
-    selected() {
-      console.log(this.Selected);
-      return true;
-    },
     passwordToggleIcon() {
       return this.passwordFieldType === "password" ? "EyeIcon" : "EyeOffIcon";
     },
@@ -319,7 +315,6 @@ export default {
             // Signed in
             const user = userCredential.user;
             // console.log(user);
-
             // Save all user data under 'users' collection
             try{
               const docRef = await addDoc(usersCollection, {
@@ -330,35 +325,22 @@ export default {
                 SelectedStudentOrEmployee: this.SelectedStudentOrEmployee,
                 ID: this.ID,
               })
-              // console.log("Document written with ID ", docRef.ID)
+              //console.log("Document written with ID ", docRef.id)
+               store.dispatch('user/getUserProfile').then(() => {
+                if (store.state.user.user.SelectedStudentOrEmployee == "Student"){
+                  router.push({ name: 'student-dashboard' })
+                } else {
+                router.push({ name: 'employee-dashboard' })
+                } 
+            })
             } catch(e){
               console.error("Error adding a document on register page to usersCollection ", e);
-            }
-            router.push({ name: 'home' })
+            } 
           }).catch((error)=>{
             console.log(error.code);
             console.log(error.message);
             //TODO toastify
           })
-          // useJwt
-          //   .register({
-          //     username: this.username,
-          //     email: this.userEmail,
-          //     password: this.password,
-          //   })
-          //   .then((response) => {
-          //     useJwt.setToken(response.data.accessToken);
-          //     useJwt.setRefreshToken(response.data.refreshToken);
-          //     localStorage.setItem(
-          //       "userData",
-          //       JSON.stringify(response.data.userData)
-          //     );
-          //     this.$ability.update(response.data.userData.ability);
-          //     this.$router.push("/");
-          //   })
-          //   .catch((error) => {
-          //     this.$refs.registerForm.setErrors(error.response.data.error);
-          //   });
         }
       });
     },
