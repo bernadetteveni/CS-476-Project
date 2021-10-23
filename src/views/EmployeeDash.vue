@@ -185,12 +185,12 @@ export default {
     "height-fade": heightFade,
     Ripple,
   },
-  beforeMount(){
-    console.log("beforeMount")
+  beforeMount() {
+    console.log("beforeMount");
     // Check if we neeed to update employee info
     // console.log("needsDATA",store.state.user.user.employeeForm)
-    if (store.state.user.user.employeeFormData == null){
-      this.showEmployeeGetAdditionalData = true
+    if (store.state.user.user.employeeFormData == null) {
+      this.showEmployeeGetAdditionalData = true;
     }
   },
   data() {
@@ -217,12 +217,11 @@ export default {
   },
   methods: {
     showForm() {
-      this.$refs['modal-login'].show()
+      this.$refs["modal-login"].show();
     },
     async validationForm() {
-      this.$refs.employeeForm.validate().then(async(success) => {
+      this.$refs.employeeForm.validate().then(async (success) => {
         if (success) {
-
           console.log("SUCCESS");
           console.log("jobDescription", this.jobDescription);
           console.log("department", this.department);
@@ -230,18 +229,17 @@ export default {
           console.log("phone", this.phone);
           console.log("extNumber", this.extNumber);
 
-
-         await this.$store.dispatch('user/updateEmployeeForm',{
+          await this.$store.dispatch("user/updateEmployeeForm", {
             jobDescription: this.jobDescription,
             department: this.department,
             roomNumber: this.roomNumber,
             phone: this.phone,
-            extNumber: this.extNumber
-          })
+            extNumber: this.extNumber,
+          });
 
-          this.showEmployeeGetAdditionalData = false
+          this.showEmployeeGetAdditionalData = false;
           // this.$bvModal.hide(modal-login)
-          this.$refs['modal-login'].hide()
+          this.$refs["modal-login"].hide();
         }
       });
     },
