@@ -4,7 +4,7 @@
     <b-alert
       v-height-fade.appear
       variant="warning"
-      :show="showAlert"
+      :show="showEmployeeGetAdditionalData"
       class="mb-3"
     >
       <div class="alert-body">
@@ -35,15 +35,16 @@
 
     <b-button
       v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-      @click="showAlert = !showAlert"
+      @click="showForm()"
       variant="outline-primary"
     >
-      Toggle Alert
+      Edit Employee Details
     </b-button>
 
     <!-- modal login-->
     <b-modal
       hide-footer
+      ref="modal-login"
       id="modal-login"
       cancel-variant="outline-secondary"
       centered
@@ -146,6 +147,7 @@
 </template>
 
 <script>
+  import store from "@/store/index";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import {
   BAlert,
@@ -162,6 +164,7 @@ import { required, email, confirmed, password } from "@validations";
 import { heightFade } from "@core/directives/animations";
 import vSelect from "vue-select";
 import Ripple from "vue-ripple-directive";
+import { onMounted } from "vue";
 
 export default {
   components: {
@@ -182,10 +185,18 @@ export default {
     "height-fade": heightFade,
     Ripple,
   },
+  beforeMount(){
+    console.log("beforeMount")
+    // Check if we neeed to update employee info
+    // console.log("needsDATA",store.state.user.user.employeeForm)
+    if (store.state.user.user.employeeFormData == null){
+      this.showEmployeeGetAdditionalData = true
+    }
+  },
   data() {
     return {
       value: "",
-      showAlert: false,
+      showEmployeeGetAdditionalData: false,
       selected: "USA",
       option: ["USA", "Canada", "Maxico"],
       emailValue: "",
@@ -205,14 +216,32 @@ export default {
     };
   },
   methods: {
-    validationForm() {
-      this.$refs.employeeForm.validate().then((success) => {
+    showForm() {
+      this.$refs['modal-login'].show()
+    },
+    async validationForm() {
+      this.$refs.employeeForm.validate().then(async(success) => {
         if (success) {
+
+          console.log("SUCCESS");
           console.log("jobDescription", this.jobDescription);
           console.log("department", this.department);
           console.log("roomNumber", this.roomNumber);
           console.log("phone", this.phone);
           console.log("extNumber", this.extNumber);
+
+
+         await this.$store.dispatch('user/updateEmployeeForm',{
+            jobDescription: this.jobDescription,
+            department: this.department,
+            roomNumber: this.roomNumber,
+            phone: this.phone,
+            extNumber: this.extNumber
+          })
+
+          this.showEmployeeGetAdditionalData = false
+          // this.$bvModal.hide(modal-login)
+          this.$refs['modal-login'].hide()
         }
       });
     },
