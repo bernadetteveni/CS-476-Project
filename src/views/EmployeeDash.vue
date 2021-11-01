@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- alert -->
+    <!-- alert for more employee info-->
     <b-alert
       v-height-fade.appear
       variant="warning"
@@ -24,7 +24,52 @@
     </b-alert>
     <!-- alert -->
 
-    <b-card title="Create Awesome 🙌">
+    <!-- alert for walk in requests-->
+    <b-alert
+
+      v-height-fade.appear
+      variant="warning"
+      :show="showWalkInRequests"
+      class="mb-3 d-flex flex-row justify-content-between"
+    >
+      <div class="alert-body">
+      <feather-icon icon="MessageSquareIcon" class="mr-50 " style="height: 23px; width:23px;"/>
+
+        Chat request from student [student name] sent 2021.01.01 00:00
+      </div>
+
+      <div>
+        <b-button
+          v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+          v-b-modal.modal-login
+          variant="outline-success"
+          class="mx-2"
+        >
+          Accept
+        </b-button>
+
+        <b-button
+          v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+          v-b-modal.modal-login
+          variant="outline-danger"
+          class=""
+        >
+          Deny
+        </b-button>
+      </div>
+    </b-alert>
+    <!-- alert -->
+
+    <b-button
+      v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+      @click="showForm()"
+      variant="outline-primary"
+      class="mb-2"
+    >
+      Edit Employee Details
+    </b-button>
+
+    <b-card title="Today">
       <b-card-text>This is employee dashboard page.</b-card-text>
       <b-card-text
         >Chocolate sesame snaps pie carrot cake pastry pie lollipop muffin.
@@ -33,13 +78,46 @@
       >
     </b-card>
 
-    <b-button
-      v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-      @click="showForm()"
-      variant="outline-primary"
+    <b-card title="Tomorrow">
+      <b-card-text>This is employee dashboard page.</b-card-text>
+      <b-card-text
+        >Chocolate sesame snaps pie carrot cake pastry pie lollipop muffin.
+        Carrot cake dragée chupa chups jujubes. Macaroon liquorice cookie wafer
+        tart marzipan bonbon. Gingerbread jelly-o dragée chocolate.</b-card-text
+      >
+    </b-card>
+
+    <b-card title="This week">
+      <b-card-text>This is employee dashboard page.</b-card-text>
+      <b-card-text
+        >Chocolate sesame snaps pie carrot cake pastry pie lollipop muffin.
+        Carrot cake dragée chupa chups jujubes. Macaroon liquorice cookie wafer
+        tart marzipan bonbon. Gingerbread jelly-o dragée chocolate.</b-card-text
+      >
+    </b-card>
+
+
+    <!-- Employee Form Edit Button -->
+    <!-- <b-card
+      title="Live Chat Request"
+      img-src="https://source.unsplash.com/collection/3579737/600x300"
+      img-alt="Image"
+      img-top
+      tag="article"
+      style="max-width: 20rem"
+      class="mb-2"
     >
-      Edit Employee Details
-    </b-button>
+      <b-card-text>
+        Accept live chat request from student: [student name]
+      </b-card-text>
+
+      <b-card-text> </b-card-text>
+      <p class="font-weight-light">Requested on: 2021.01.01 0:00</p>
+      <div class="d-flex justify-content-between">
+        <b-button href="#" variant="danger">Deny</b-button>
+        <b-button href="#" variant="success">Accept</b-button>
+      </div>
+    </b-card> -->
 
     <!-- modal login-->
     <b-modal
@@ -147,9 +225,10 @@
 </template>
 
 <script>
-  import store from "@/store/index";
+import store from "@/store/index";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import {
+  BAvatar,
   BAlert,
   BCard,
   BCardText,
@@ -172,6 +251,7 @@ export default {
     ValidationObserver,
     BCard,
     BAlert,
+    BAvatar,
     BCardText,
     BButton,
     BModal,
@@ -197,6 +277,7 @@ export default {
     return {
       value: "",
       showEmployeeGetAdditionalData: false,
+      showWalkInRequests: true,
       selected: "USA",
       option: ["USA", "Canada", "Maxico"],
       emailValue: "",

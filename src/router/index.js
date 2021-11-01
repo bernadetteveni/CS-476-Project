@@ -58,10 +58,10 @@ const router = new VueRouter({
       name: 'create-appointment',
       component: () => import('@/views/CreateAppointment.vue'), 
       meta: {
-        pageTitle: 'Create Apoointment',
+        pageTitle: 'Create Appointment',
         breadcrumb: [
           {
-            text: 'Create Apoointment',
+            text: 'Create Appointment',
             active: true,
           },
         ],

@@ -24,6 +24,7 @@ const db = getFirestore()
 
 // firebase collections
 const usersCollection = collection(db,'users')
+const appointmentCollection = collection(db,'appointments')
 // const postsCollection = db.collection('posts')
 // const commentsCollection = db.collection('comments')
 // const likesCollection = db.collection('likes')
@@ -38,6 +39,7 @@ export {
   // avatarsRef,
   db,
   usersCollection,
+  appointmentCollection,
   // postsCollection,
   // commentsCollection,
   // likesCollection,

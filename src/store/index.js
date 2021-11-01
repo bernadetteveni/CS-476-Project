@@ -6,6 +6,7 @@ import app from './app'
 import appConfig from './app-config'
 import verticalMenu from './vertical-menu'
 import user from './user/index.js'
+import firestore from './firestore/index.js'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -14,6 +15,7 @@ export default new Vuex.Store({
     appConfig,
     verticalMenu,
     user,
+    firestore
   },
   strict: process.env.DEV,
 })
