@@ -2,15 +2,15 @@
   <div>
         <b-card
         @click="$router.push('create-appointment')"
-        style="height: 200px;width:500px;"
-        img-src="https://source.unsplash.com/lp1AKIUV3yo/500x200"
+         style="object-fit: fill; width: 400px; height: 120px;"
+        img-src="@/assets/images/avatars/11.jpg"
           overlay
           text-variant="white"
           img-alt="card img"
           body-class="bg-overlay"
           class="mx-auto "
         >
-        <div class="h2 text-white mt-4"> Make an Appointment</div>
+        <div class="h2 text-white mt-5"> Make an Appointment</div>
           
           <b-card-text class="h5 text-white">
             Book a free online session with a University of Regina employee today!

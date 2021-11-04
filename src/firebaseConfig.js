@@ -1,5 +1,6 @@
 import 'firebase/firestore'
 import { getFirestore ,collection } from "firebase/firestore"
+import { getDatabase, ref } from "firebase/database";
 // import 'firebase/storage'
 
 import { initializeApp } from 'firebase/app';
@@ -34,12 +35,15 @@ const appointmentCollection = collection(db,'appointments')
 // // Create a child reference
 // const avatarsRef = storageRef.child('Avatars')
 
+const realTimeDB = getDatabase();
+
 export {
   // storageRef,
   // avatarsRef,
   db,
   usersCollection,
   appointmentCollection,
+  realTimeDB,
   // postsCollection,
   // commentsCollection,
   // likesCollection,

@@ -1,13 +1,5 @@
 // THIS IS ALL AWONG THIS IS FIRESTORE MODULE
 
-
-
-
-
-
-
-
-
 import { usersCollection,db } from "@/firebaseConfig"
 import {getDocs,query, where} from 'firebase/firestore'
 import { getAuth } from "firebase/auth";
@@ -16,11 +8,7 @@ import { doc, updateDoc } from "firebase/firestore";
 export default {
   namespaced: true, // names will not collide with other modules
   state: {
-    TEST: 'Dashboard',
-    user: { // User Default Values
-        firstName: '',
-        avatar: '',
-    }
+    employeeList: ""
   },
   getters: {
     getStudentOrEmployee : state => {
@@ -61,7 +49,7 @@ export default {
         //     commit('UPDATE_TEXT', "Employee Dashboard");
         //  }
         });
-      },
+      }, 
 
 
       async updateEmployeeForm ({state, dispatch},formData){
