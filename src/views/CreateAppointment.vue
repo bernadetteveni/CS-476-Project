@@ -147,7 +147,7 @@ import {
   BFormDatepicker,
 } from "bootstrap-vue";
 import BCardCode from "@core/components/b-card-code";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs,addDoc } from "firebase/firestore";
 import { db,realTimeDB } from "@/firebaseConfig";
 import { set , ref} from "firebase/database";
 
@@ -207,7 +207,7 @@ export default {
       }
       this.showTimePicker = true
     },
-     setAppointment(time) {
+     async setAppointment(time) {
       console.log("in set appoinemnt index=",time)
       console.log("email of employee picked",this.employeeList[this.employeePicked].userEmail)
       console.log("the date selected is",this.date)
@@ -251,6 +251,10 @@ export default {
         
       });
 
+      // TODO add newData to firestore (appoinments collection )
+      // Add a new document in collection "cities"
+      const docRef = await addDoc(collection(db, "appointments"), newData);
+      console.log("Document written to firestore with ID: ", docRef.id);
 
 
       // set(ref(realTimeDB, RTDBLocation, newData))
