@@ -15,9 +15,10 @@
 
 <script>
 import { BCard, BCardText, BLink } from 'bootstrap-vue'
-import store from '@/store'
+
 
 export default {
+  
   components: {
     BCard,
     BCardText,
@@ -34,12 +35,38 @@ export default {
   },
   computed: {
     TEST() {
-      return store.state.user.TEST
+      return this.$store.state.user.TEST
     },
     isStudent () {
-      return store.state.user.user.SelectedStudentOrEmployee == 'Student'
-    }
-  }
+      return this.$store.state.user.user.SelectedStudentOrEmployee == 'Student'
+    },
+  },
+  mounted() {
+    console.log("in setup")
+
+
+      // Testing Database module
+      console.log("this.$store.state.database.databaseTEST",
+            this.$store.state.database.databaseTEST)
+
+      this.$store.dispatch('database/testDatabaseAction',"HelloData")
+
+      console.log("this.$store.state.database.databaseTEST",
+      this.$store.state.database.databaseTEST)
+
+      console.log("this.$store.getters['database/getdatabaseTEST']",
+            this.$store.getters['database/getdatabaseTEST'])
+
+      console.log(this.$store)
+
+
+
+      // Testing firebase module
+      
+
+
+
+  },
 }
 </script>
 
