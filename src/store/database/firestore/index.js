@@ -1,77 +1,96 @@
 // THIS IS ALL AWONG THIS IS FIRESTORE MODULE
 
-import { usersCollection,db } from "@/firebaseConfig"
-import {getDocs,query, where} from 'firebase/firestore'
-import { getAuth } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import { db, realTimeDB } from "@/firebaseConfig";
+import { set, ref } from "firebase/database";
+
 
 export default {
   namespaced: true, // names will not collide with other modules
   state: {
-    employeeList: ""
+    firebaseVariable: "firebase WORKS",
+    employeeListOfAppointments: [],
+    employeeList: [],
   },
   getters: {
-    getStudentOrEmployee : state => {
-      return state.user.user.SelectedStudentOrEmployee
+    getFirebaseVariable: state => {
+
+      return state.firebaseVariable
     },
-    employeeRequiresAdditionalData : state => {
-      return ( state.user.user.employeeForm? true:false)
-    }
-    // doneTodos: state => {
-    //   return state.todos.filter(todo => todo.done)
-    // }
+    getEmployeeListOfAppointments: state => {
+      return Object.assign([], state.employeeListOfAppointments)
+    },
   },
   mutations: { // COMMIT NO LOGIC - ONLY CHANGE STATE
-    UPDATE_TEXT(state, val) {
-      state.TEST = val
+    UPDATE_firebaseVariable(state, data) {
+      state.firebaseVariable = data
     },
-    SET_USER_PROFILE(state, val) {
-        state.user = val
-      },
+    addToEmployeeListOfAppointments(state, appt) {
+      // mutate state
+      state.employeeListOfAppointments.push(appt)
+    },
+    addToEmployeeList(state, employee) {
+      // mutate state
+      state.employeeList.push(employee)
+    }
+
   },
   actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
-      async getUserProfile ({ commit }) {
-        console.log("Getting user profile")
-        var email = '1'
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user !== null) {
-          email = user.auth.currentUser.email;
-        }
-        
-        const q = query(usersCollection, where("userEmail", "==", email));
+    async getEmployeesList({ commit }) {
+      const q = query(
+        collection(db, "users"),
+        where("employeeFormData", "!=", null)
+      );
+  
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        // this.employeeList.push(doc.data());
+        commit('addToEmployeeList', doc.data());
+      });
+    },
+    testFirebaseAction({ commit }, data) {
+      commit('UPDATE_firebaseVariable', data);
+    },
+    async createAppointment({ }, data) {
+      console.log("FROM createAppointment", data)
+      // API CALL TO firebase and set the data
+        // Create a room (REALTIME_DB)
+  
+        set(ref(realTimeDB, data.RTDBLocation), data.newData)
+          .then(() => {
+            console.log(" // Data saved successfully!")
+          })
+          .catch((error) => {
+            console.log("error", error) // The write failed...
+  
+          });
 
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          commit('SET_USER_PROFILE', doc.data());
-        //   if(doc.data().SelectedStudentOrEmployee == "Employee"){
-        //     console.log(doc.data().SelectedStudentOrEmployee);
-        //     commit('UPDATE_TEXT', "Employee Dashboard");
-        //  }
-        });
-      }, 
+        // TODO add newData to firestore (appoinments collection )
+        // Add a new document in collection "cities"
+        const docRef = await addDoc(collection(db, "appointments"), data.newData);
+        console.log("Document written to firestore with ID: ", docRef.id);
+    },
+    async queryEmployeeAppointments({ commit, state }, data) {
+      const date = data.date;
+      const employeeEmail = data.employeeEmail;
 
+      console.log("Checking the date", date);
+      console.log("employee email", employeeEmail);
 
-      async updateEmployeeForm ({state, dispatch},formData){
-        // console.log("formData in store", formData)
-        // commit('UPDATE_TEXT', "hello")
-        // console.log(state.user.userEmail)
-        
-        var email = '1'
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user !== null) {
-          email = user.auth.currentUser.email;
-        }
-        
-        var userDocID;
-        const q = query(usersCollection, where("userEmail", "==", email));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {userDocID = doc.id})
+      const q = query(
+        collection(db, "appointments"),
+        where(
+          "employeeEmail",
+          "==",
+          employeeEmail
+        ),
+        where("date", "==", date)
+      );
 
-        const myUserDocRef = doc(db, "users", userDocID);
-        await updateDoc(myUserDocRef,{employeeFormData: formData});
-        dispatch('getUserProfile')
-      }
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        commit('addToEmployeeListOfAppointments', doc.data());
+      });
+    },
   },
 }

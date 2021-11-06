@@ -106,15 +106,7 @@
       </div>
 
       <div v-if="showTimePicker">
-        <b-button
-          v-for="(app, index) in employeeListOfAppointments"
-          :key="'time' + 'a' + index"
-          variant="primary"
-          @click="setAppointment(index)"
-          class="m-2"
-        >
-          {{ app }}
-        </b-button>
+        
 
         <b-button
           v-for="(available, index) in availableTimeSlots"
@@ -171,33 +163,16 @@ export default {
     },
   },
   methods: {
-    // TODO MAKE THIS INTO A VUEX dispatch call and get the data into this.employeeListOfAppointments from VUEX
-    // create a vuex module firestore
-
     async queryAppointments(date) {
-      console.log("Checking the date", date);
-      console.log(
-        "employee email",
-        this.employeeList[this.employeePicked].userEmail
-      );
+      var data = {}
+      data.date = date;
+      data.employeeEmail = this.employeeList[this.employeePicked].userEmail;
 
-      const q = query(
-        collection(db, "appointments"),
-        where(
-          "employeeEmail",
-          "==",
-          this.employeeList[this.employeePicked].userEmail
-        ),
-        where("date", "==", date)
-      );
-
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
-        this.employeeListOfAppointments.push(doc.data());
-      });
-      this.filterAvailableTimeSlots();
+      await this.$store.dispatch('database/queryEmployeeAppointments',data).then( () => {
+        this.employeeListOfAppointments = this.$store.getters['database/getEmployeeListOfAppointments'];
+        this.employeeListOfAppointments = JSON.parse(JSON.stringify(this.employeeListOfAppointments))
+        this.filterAvailableTimeSlots();
+      })
     },
     filterAvailableTimeSlots() {
       for (let i = 0; i < this.employeeListOfAppointments.length; i++) {
@@ -207,21 +182,27 @@ export default {
       }
       this.showTimePicker = true
     },
+
      async setAppointment(time) {
-      console.log("in set appoinemnt index=",time)
+      console.log("in set appointment index=",time)
       console.log("email of employee picked",this.employeeList[this.employeePicked].userEmail)
       console.log("the date selected is",this.date)
       console.log("student email", this.$store.state.user.user.userEmail)
 
+      // var data = {}
+      // data.time= time
+      // data.date = date
+      // data.studentEmail =this.$store.state.user.user.userEmail
+      // data.employeePicked = this.employeeList[this.employeePicked].userEmail
 
 
     //   { APPOINTMENT OBJECT FIRESTORE
-        // "employeeEmail": "employee2@uregina.ca",
-        // "studentEmail": "student@uregina.ca"
-        // "date": "2021-10-21",
-        // "time": "09:30:00",
-        // "id": "1", // ref from REALTIME DB
-        // "title": "hello1",
+    //     "employeeEmail": "employee2@uregina.ca",
+    //     "studentEmail": "student@uregina.ca"
+    //     "date": "2021-10-21",
+    //     "time": "09:30:00",
+    //     "id": "1", // ref from REALTIME DB
+    //     "title": "hello1",
     // }
 
       const RTDBLocation = 'rooms/' + this.employeeList[this.employeePicked].ID
@@ -239,32 +220,16 @@ export default {
         "title": this.titleForAppointment
       }
 
-
-      // Create a room (REALTIME_DB)
- 
-      set(ref(realTimeDB, RTDBLocation), newData)
-      .then(() => {
-      console.log(" // Data saved successfully!")
+      var data = {}
+      data.RTDBLocation = RTDBLocation
+      data.newData = newData;
+      await this.$store.dispatch('database/createAppointment',data).then( () => {
+         // set(ref(realTimeDB, RTDBLocation, newData))
+          this.$bvModal.hide('modal-primary') // close modal
+          // TODO Redirect to your student home page
+          this.$router.push({ name: 'student-dashboard' })
+          // Add appointment document with room name (FIRESTORE)
       })
-      .catch((error) => {
-      console.log("error", error) // The write failed...
-        
-      });
-
-      // TODO add newData to firestore (appoinments collection )
-      // Add a new document in collection "cities"
-      const docRef = await addDoc(collection(db, "appointments"), newData);
-      console.log("Document written to firestore with ID: ", docRef.id);
-
-
-      // set(ref(realTimeDB, RTDBLocation, newData))
-      console.log("DONE")
-      this.$bvModal.hide('modal-primary') // close modal
-      // TODO Redirect to your student home page
-      this.$router.push({ name: 'student-dashboard' })
-      // Add appointment document with room name (FIRESTORE)
-
-
     },
     setEmployee(index) {
       this.employeePicked = index;
@@ -306,24 +271,12 @@ export default {
     },
   },
 
-  async beforeCreate() {
-    // await this.$store.dispatch("firestore/getEmployeesForAppointmentPage");
-    // this.employeeList = this.$store.state.firestore.employeeList;
-    // this.employeeListOfAppointments =
-    //   this.$store.state.firestore.employeeListOfAppointments;
-
-    const q = query(
-      collection(db, "users"),
-      where("employeeFormData", "!=", null)
-    );
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      this.employeeList.push(doc.data());
-      // doc.data() is never undefined for query doc snapshots
-      // console.log(doc.id, " => ", doc.data());
-    });
-    this.randomize();
+  beforeCreate() {
+     this.$store.dispatch('database/getEmployeesList').then( () => {
+      this.employeeList = this.$store.getters['database/getEmployeeList'];
+      this.employeeList = JSON.parse(JSON.stringify(this.employeeList)) // remove observer
+      this.randomize();// randomize images for employees
+    })
   },
   data() {
     return {

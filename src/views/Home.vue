@@ -45,7 +45,7 @@ export default {
     console.log("in setup")
 
 
-      // Testing Database module
+      // Testing DATABASE module
       console.log("this.$store.state.database.databaseTEST",
             this.$store.state.database.databaseTEST)
 
@@ -61,9 +61,31 @@ export default {
 
 
 
-      // Testing firebase module
-      
+      // Testing FIREABASE sub-module
 
+      console.log("this.$store.state.database.firestore.databaseTEST",
+            this.$store.state.database.firestore.firebaseVariable)
+
+      this.$store.dispatch('database/firestore/testFirebaseAction',"HelloFirebaseData")
+
+      console.log("this.$store.state.database.databaseTEST",
+      this.$store.state.database.firestore.firebaseVariable)
+
+      console.log("this.$store.getters['database/firestore/getdatabaseTEST']",
+            this.$store.getters['database/firestore/getFirebaseVariable'])
+
+
+      // ACTUAL DATABASE USE
+      const data = { 
+          "employeeEmail": "employee2@uregina.ca",
+          "studentEmail": "student@uregina.ca",
+          "date": "2021-10-21",
+          "time": "09:30:00",
+          "id": "1", // ref from REALTIME DB
+          "title": "hello1",
+        }
+
+     // this.$store.dispatch('database/createAppointment',data)
 
 
   },
