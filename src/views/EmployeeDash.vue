@@ -26,14 +26,17 @@
 
     <!-- alert for walk in requests-->
     <b-alert
-
       v-height-fade.appear
       variant="warning"
       :show="showWalkInRequests"
       class="mb-3 d-flex flex-row justify-content-between"
     >
       <div class="alert-body">
-      <feather-icon icon="MessageSquareIcon" class="mr-50 " style="height: 23px; width:23px;"/>
+        <feather-icon
+          icon="MessageSquareIcon"
+          class="mr-50"
+          style="height: 23px; width: 23px"
+        />
 
         Chat request from student [student name] sent 2021.01.01 00:00
       </div>
@@ -69,33 +72,52 @@
       Edit Employee Details
     </b-button>
 
-    <b-card title="Today">
-      <b-card-text>This is employee dashboard page.</b-card-text>
-      <b-card-text
-        >Chocolate sesame snaps pie carrot cake pastry pie lollipop muffin.
-        Carrot cake dragée chupa chups jujubes. Macaroon liquorice cookie wafer
-        tart marzipan bonbon. Gingerbread jelly-o dragée chocolate.</b-card-text
-      >
-    </b-card>
+    <div>
+      <b-card title="Your Upcoming Appointments List">
+        <div class="media-list media-bordered">
+          <b-media
+            vertical-align="center"
+            v-for="(appointment, index) in appointmentsList"
+            :key="'A' + index"
+          >
+            <template #aside>
+              <feather-icon icon="CalendarIcon" size="37" />
+            </template>
+            <h4 class="ml-2 media-heading">
+              {{ appointment.date }} at {{ appointment.time }}
+            </h4>
+            <b-card-text>
+              <div class="">
+                <div class="row ml-1">
+                  <div class="col">
+                    <div>Student Name: {{ appointment.studentName }}</div>
+                    <div>Student Email: {{ appointment.studentEmail }}</div>
+                    <div>Appointment Description: {{ appointment.title }}</div>
+                  </div>
+                  <div class="col"></div>
 
-    <b-card title="Tomorrow">
-      <b-card-text>This is employee dashboard page.</b-card-text>
-      <b-card-text
-        >Chocolate sesame snaps pie carrot cake pastry pie lollipop muffin.
-        Carrot cake dragée chupa chups jujubes. Macaroon liquorice cookie wafer
-        tart marzipan bonbon. Gingerbread jelly-o dragée chocolate.</b-card-text
-      >
-    </b-card>
+                  <div class="col">
+                    <b-button
+                      :disabled="disableButton(appointment.date)"
+                      variant="primary"
+                      block
+                      v-b-modal.modal-primary
+                      @click="setEmployee(index)"
+                    >
+                      Join Meeting
+                    </b-button>
 
-    <b-card title="This week">
-      <b-card-text>This is employee dashboard page.</b-card-text>
-      <b-card-text
-        >Chocolate sesame snaps pie carrot cake pastry pie lollipop muffin.
-        Carrot cake dragée chupa chups jujubes. Macaroon liquorice cookie wafer
-        tart marzipan bonbon. Gingerbread jelly-o dragée chocolate.</b-card-text
-      >
-    </b-card>
-
+                    <b-button block variant="outline-secondary">
+                      Cancel Appointment
+                    </b-button>
+                  </div>
+                </div>
+              </div>
+            </b-card-text>
+          </b-media>
+        </div>
+      </b-card>
+    </div>
 
     <!-- Employee Form Edit Button -->
     <!-- <b-card
@@ -228,6 +250,7 @@
 import store from "@/store/index";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 import {
+  BMedia,
   BAvatar,
   BAlert,
   BCard,
@@ -251,6 +274,7 @@ export default {
     ValidationObserver,
     BCard,
     BAlert,
+    BMedia,
     BAvatar,
     BCardText,
     BButton,
@@ -266,15 +290,30 @@ export default {
     Ripple,
   },
   beforeMount() {
-    console.log("beforeMount");
+    // console.log("beforeMount");
     // Check if we neeed to update employee info
     // console.log("needsDATA",store.state.user.user.employeeForm)
     if (store.state.user.user.employeeFormData == null) {
       this.showEmployeeGetAdditionalData = true;
     }
+
+    this.$store
+      .dispatch(
+        "database/downloadMyEmployeeAppointments",
+        this.$store.state.user.user.userEmail
+      )
+      .then(() => {
+        this.appointmentsList =
+          this.$store.getters["database/getMyEmployeeAppointments"];
+        // console.log(this.appointmentsList)
+        this.appointmentsList = JSON.parse(
+          JSON.stringify(this.appointmentsList)
+        );
+      });
   },
   data() {
     return {
+      appointmentsList: [],
       value: "",
       showEmployeeGetAdditionalData: false,
       showWalkInRequests: true,
@@ -297,6 +336,27 @@ export default {
     };
   },
   methods: {
+    disableButton(date) {
+      // console.log(date);
+      var d = new Date(),
+        month = "" + (d.getMonth() + 1),
+        day = "" + d.getDate(),
+        year = d.getFullYear();
+
+      if (month.length < 2) month = "0" + month;
+      if (day.length < 2) day = "0" + day;
+
+      const today = [year, month, day].join("-");
+
+      // console.log("today",today);
+      
+      if (date > today) {
+        return true;
+      } else {
+        return false
+      }
+
+    },
     showForm() {
       this.$refs["modal-login"].show();
     },

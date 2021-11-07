@@ -9,6 +9,13 @@ export default {
         databaseTEST: "databaseTEST-WORKS"
     },
     getters: {
+        
+        getMyEmployeeAppointments: state => {
+            return JSON.parse(JSON.stringify(state.firestore.employeeAppointments))
+        },
+        getMyStudentAppointments: state => {
+            return JSON.parse(JSON.stringify(state.firestore.studentAppointments))
+        },
         getdatabaseTEST: state => {
             return state.databaseTEST
         },
@@ -25,6 +32,26 @@ export default {
         },
     },
     actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
+        async downloadMyEmployeeAppointments({ dispatch },email) {
+            return new Promise(async (resolve, reject) => {
+                await dispatch('firestore/downloadMyEmployeeAppointments',email);
+                resolve()
+            }, response => {
+                console.log("error line 36")
+                // error in loading data
+                reject()
+            })
+        },
+        async downloadMyStudentAppointments({ dispatch },email) {
+            return new Promise(async (resolve, reject) => {
+                await dispatch('firestore/downloadMyStudentAppointments',email);
+                resolve()
+            }, response => {
+                console.log("error line 36")
+                // error in loading data
+                reject()
+            })
+        },
         async getEmployeesList({ dispatch }) {
             return new Promise(async (resolve, reject) => {
                 await dispatch('firestore/getEmployeesList');

@@ -1,9 +1,22 @@
 // THIS IS ALL AWONG THIS IS FIRESTORE MODULE
 
-import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc,orderBy } from "firebase/firestore";
 import { db, realTimeDB } from "@/firebaseConfig";
 import { set, ref } from "firebase/database";
 
+function formatDate(date) {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+
+  return [year, month, day].join('-');
+}
 
 export default {
   namespaced: true, // names will not collide with other modules
@@ -11,6 +24,8 @@ export default {
     firebaseVariable: "firebase WORKS",
     employeeListOfAppointments: [],
     employeeList: [],
+    studentAppointments: [],
+    employeeAppointments: [],
   },
   getters: {
     getFirebaseVariable: state => {
@@ -22,6 +37,24 @@ export default {
     },
   },
   mutations: { // COMMIT NO LOGIC - ONLY CHANGE STATE
+    addToMyEmployeeDAppointments(state, data) {
+      state.employeeAppointments.push(data)
+    },
+    eraseMyEmployeeAppointments(state) {
+      state.employeeAppointments = []
+    },
+    eraseStudentAppointments(state) {
+      state.studentAppointments = []
+    },
+    eraseEmployeeListOfAppointment(state) {
+      state.employeeListOfAppointments = []
+      },
+      eraseEmployeeList(state) {
+        state.employeeList = []
+      },
+    addToStudentAppointments(state, data) {
+      state.studentAppointments.push(data)
+    },
     UPDATE_firebaseVariable(state, data) {
       state.firebaseVariable = data
     },
@@ -36,7 +69,47 @@ export default {
 
   },
   actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
+    async downloadMyEmployeeAppointments({ commit },email) {
+      commit('eraseMyEmployeeAppointments');
+      const date = formatDate(new Date())
+      // console.log("USING TODAYS DATE AS", date)
+      const q = query(
+        collection(db, "appointments"),
+        where("employeeEmail","==",email),
+        where("date",">=",date),
+        orderBy("date", "asc"),
+        orderBy("time", "asc")
+      );
+
+      const querySnapshot = await getDocs(q);
+      await querySnapshot.forEach((doc) => {
+        console.log("firebase appointment",doc.data())
+        commit('addToMyEmployeeDAppointments', doc.data());
+      });
+    },
+
+    async downloadMyStudentAppointments({ commit },email) {
+      commit('eraseStudentAppointments');
+      const date = formatDate(new Date())
+      // console.log("USING TODAYS DATE AS", date)
+      const q = query(
+        collection(db, "appointments"),
+        where("studentEmail","==",email),
+        where("date",">=",date),
+        orderBy("date", "asc"),
+        orderBy("time", "asc")
+      );
+
+      const querySnapshot = await getDocs(q);
+      await querySnapshot.forEach((doc) => {
+        // console.log("firebase appointment",doc.data())
+        commit('addToStudentAppointments', doc.data());
+      });
+    },
+
     async getEmployeesList({ commit }) {
+      commit('eraseEmployeeList');
+      
       const q = query(
         collection(db, "users"),
         where("employeeFormData", "!=", null)
@@ -52,7 +125,7 @@ export default {
       commit('UPDATE_firebaseVariable', data);
     },
     async createAppointment({ }, data) {
-      console.log("FROM createAppointment", data)
+      // console.log("FROM createAppointment", data)
       // API CALL TO firebase and set the data
         // Create a room (REALTIME_DB)
   
@@ -68,9 +141,10 @@ export default {
         // TODO add newData to firestore (appoinments collection )
         // Add a new document in collection "cities"
         const docRef = await addDoc(collection(db, "appointments"), data.newData);
-        console.log("Document written to firestore with ID: ", docRef.id);
+        // console.log("Document written to firestore with ID: ", docRef.id);
     },
     async queryEmployeeAppointments({ commit, state }, data) {
+      commit('eraseEmployeeListOfAppointment');
       const date = data.date;
       const employeeEmail = data.employeeEmail;
 

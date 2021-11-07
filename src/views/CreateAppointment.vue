@@ -23,7 +23,7 @@
             (status:{{ employee.status }})
           </h4>
           <b-card-text class="mb-0">
-            <div class="container">
+            <div>
               <div class="row">
                 <div class="col">
                   <div>Employee ID: {{ employee.ID }}</div>
@@ -149,7 +149,6 @@ export default {
     BFormDatepicker,
     BCard,
     BFormInput,
-    BCardCode,
     BButton,
     BFormTimepicker,
     BMedia,
@@ -217,7 +216,9 @@ export default {
         "date": this.date,
         "time": time,
         "id": RTDBLocation,
-        "title": this.titleForAppointment
+        "title": this.titleForAppointment,
+        "employeeName": this.employeeList[this.employeePicked].firstName +' '+ this.employeeList[this.employeePicked].lastName,
+        "studentName":this.$store.state.user.user.firstName + " "+ this.$store.state.user.user.lastName
       }
 
       var data = {}
