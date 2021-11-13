@@ -2,7 +2,7 @@
   <div>
     <div>
       <b-card
-        @click="$router.push('create-appointment')"
+        @click="$router.push({ name: 'create-appointment' })"
         style="
           object-fit: fill;
           width: 400px;
@@ -55,12 +55,12 @@
                       variant="primary"
                       block
                       v-b-modal.modal-primary
-                      @click="setEmployee(index)"
+                      @click="goToMeetingRoom(appointment.id)"
                     >
                       Join Meeting
                     </b-button>
 
-                    <b-button block variant="outline-secondary">
+                    <b-button block variant="outline-secondary" @click="cancelAppointment(appointment.id)">
                       Cancel Appointment
                     </b-button>
                   </div>
@@ -120,7 +120,29 @@ export default {
   },
   
   methods: {
-   
+    goToMeetingRoom(eventID) {
+      console.log("in got to meeting with ", eventID)
+
+    },
+    cancelAppointment(arg) {
+      // CALL VUEX
+      this.$store.dispatch("database/cancelAppointment",arg)
+
+      this.$store
+      .dispatch(
+        "database/downloadMyStudentAppointments",
+        this.$store.state.user.user.userEmail
+      )
+      .then(() => {
+        this.appointmentsList =
+          this.$store.getters["database/getMyStudentAppointments"];
+        // console.log(this.appointmentsList)
+        this.appointmentsList = JSON.parse(
+          JSON.stringify(this.appointmentsList)
+        );
+      });
+      // console.log("In cancel appointment with ",arg)
+    },
     disableButton(date) {
       // console.log(date);
       var d = new Date(),

@@ -183,10 +183,10 @@ export default {
     },
 
      async setAppointment(time) {
-      console.log("in set appointment index=",time)
-      console.log("email of employee picked",this.employeeList[this.employeePicked].userEmail)
-      console.log("the date selected is",this.date)
-      console.log("student email", this.$store.state.user.user.userEmail)
+      // console.log("in set appointment index=",time)
+      // console.log("email of employee picked",this.employeeList[this.employeePicked].userEmail)
+      // console.log("the date selected is",this.date)
+      // console.log("student email", this.$store.state.user.user.userEmail)
 
       // var data = {}
       // data.time= time
@@ -207,9 +207,10 @@ export default {
       const RTDBLocation = 'rooms/' + this.employeeList[this.employeePicked].ID
                                   +"_"+this.employeeList[this.employeePicked].lastName 
                                   +"_"+this.$store.state.user.user.lastName 
-                                  +"_"+ this.date;
+                                  +"_"+ this.date
+                                  +"_"+ time;
 
-
+      // console.log("!!!!!!!!!!!!!!RTDBLocation",RTDBLocation)
       const newData = {
         "employeeEmail": this.employeeList[this.employeePicked].userEmail,
         "studentEmail": this.$store.state.user.user.userEmail,

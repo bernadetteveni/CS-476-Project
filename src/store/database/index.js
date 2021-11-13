@@ -32,6 +32,16 @@ export default {
         },
     },
     actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
+        async cancelAppointment({ dispatch },eventID) {
+            return new Promise(async (resolve, reject) => {
+                await dispatch('firestore/cancelAppointment',eventID);
+                resolve()
+            }, response => {
+                console.log("error line 40")
+                // error in loading data
+                reject()
+            })
+        },
         async downloadMyEmployeeAppointments({ dispatch },email) {
             return new Promise(async (resolve, reject) => {
                 await dispatch('firestore/downloadMyEmployeeAppointments',email);
