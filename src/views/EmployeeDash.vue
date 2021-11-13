@@ -339,13 +339,18 @@ export default {
   },
   methods: {
     goToMeetingRoom(eventID) {
-      console.log("in got to meeting with ", eventID)
+      // console.log("in got to meeting with ", eventID)
+      // Set user to unavailable
+      this.$store.dispatch('user/setStatusToUnavailable')
+       
       this.$router.push({
-        name: 'live-chat-view',
-        params: {
-          roomID: eventID
-        }
-      })
+          name: 'live-chat-view',
+          params: {
+            roomID: eventID
+          }
+        })
+
+     
     },
     cancelAppointment(arg) {
       // CALL VUEX

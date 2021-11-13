@@ -124,7 +124,7 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.dispatch('user/logout')
+      this.$store.dispatch('user/setStatusToUnavailable')
       const auth = getAuth();
       signOut(auth).then(()=>{
         // Sign out successful

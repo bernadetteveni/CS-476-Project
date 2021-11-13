@@ -32,7 +32,7 @@ export default {
       },
   },
   actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
-    async logout ({ commit }) {
+    async setStatusToUnavailable ({ commit }) {
       console.log("Logging out in VUEX")
       var email = '1'
       const auth = getAuth();
@@ -45,7 +45,6 @@ export default {
 
       const querySnapshot = await getDocs(q);
       await querySnapshot.forEach(async (document) => {
-        commit('SET_USER_PROFILE', null);
         // console.log("Updating firebase user to Not available",document.data())
         await updateDoc( doc(db, "users", document.ref.id),
           {

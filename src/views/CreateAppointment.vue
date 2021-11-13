@@ -63,6 +63,7 @@
                     v-if="employee.status == 'Available'"
                     block
                     variant="outline-secondary"
+                    @click="sendWalkInAppointmentRequest(employee.userEmail)"
                   >
                     Chat Now
                   </b-button>
