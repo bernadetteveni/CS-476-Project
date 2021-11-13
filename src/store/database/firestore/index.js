@@ -110,7 +110,7 @@ export default {
 
       const querySnapshot = await getDocs(q);
       await querySnapshot.forEach((doc) => {
-        console.log("firebase appointment", doc.data())
+        // console.log("firebase appointment", doc.data())
         commit('addToMyEmployeeAppointments', doc.data());
       });
     },

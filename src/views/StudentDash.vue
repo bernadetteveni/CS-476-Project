@@ -122,26 +122,26 @@ export default {
   methods: {
     goToMeetingRoom(eventID) {
       console.log("in got to meeting with ", eventID)
-
+      this.$router.push({
+        name: 'live-chat-view',
+        params: {
+          roomID: eventID
+        }
+      })
     },
     cancelAppointment(arg) {
       // CALL VUEX
-      this.$store.dispatch("database/cancelAppointment",arg)
-
-      this.$store
-      .dispatch(
-        "database/downloadMyStudentAppointments",
-        this.$store.state.user.user.userEmail
-      )
-      .then(() => {
-        this.appointmentsList =
-          this.$store.getters["database/getMyStudentAppointments"];
-        // console.log(this.appointmentsList)
-        this.appointmentsList = JSON.parse(
-          JSON.stringify(this.appointmentsList)
-        );
-      });
-      // console.log("In cancel appointment with ",arg)
+      this.$store.dispatch("database/cancelAppointment",arg).then(()=>{
+          this.$store.dispatch("database/downloadMyStudentAppointments",
+            this.$store.state.user.user.userEmail).then(() => {
+              this.appointmentsList =
+              this.$store.getters["database/getMyStudentAppointments"];
+            // console.log(this.appointmentsList)
+            this.appointmentsList = JSON.parse(
+              JSON.stringify(this.appointmentsList)
+            );
+          });
+      })
     },
     disableButton(date) {
       // console.log(date);

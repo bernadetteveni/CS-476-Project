@@ -102,12 +102,14 @@
                       variant="primary"
                       block
                       v-b-modal.modal-primary
-                      @click="setEmployee(index)"
+                      @click="goToMeetingRoom(appointment.id)"
                     >
                       Join Meeting
                     </b-button>
 
-                    <b-button block variant="outline-secondary">
+                    <b-button block variant="outline-secondary"
+                    @click="cancelAppointment(appointment.id)" >
+                      
                       Cancel Appointment
                     </b-button>
                   </div>
@@ -336,6 +338,33 @@ export default {
     };
   },
   methods: {
+    goToMeetingRoom(eventID) {
+      console.log("in got to meeting with ", eventID)
+      this.$router.push({
+        name: 'live-chat-view',
+        params: {
+          roomID: eventID
+        }
+      })
+    },
+    cancelAppointment(arg) {
+      // CALL VUEX
+      this.$store.dispatch("database/cancelAppointment",arg).then(()=> {
+        this.$store
+      .dispatch(
+        "database/downloadMyEmployeeAppointments",
+        this.$store.state.user.user.userEmail
+      )
+      .then(() => {
+        this.appointmentsList =
+          this.$store.getters["database/getMyEmployeeAppointments"];
+        // console.log(this.appointmentsList)
+        this.appointmentsList = JSON.parse(
+          JSON.stringify(this.appointmentsList)
+        );
+      });
+      })
+    },
     disableButton(date) {
       // console.log(date);
       var d = new Date(),
@@ -363,12 +392,12 @@ export default {
     async validationForm() {
       this.$refs.employeeForm.validate().then(async (success) => {
         if (success) {
-          console.log("SUCCESS");
-          console.log("jobDescription", this.jobDescription);
-          console.log("department", this.department);
-          console.log("roomNumber", this.roomNumber);
-          console.log("phone", this.phone);
-          console.log("extNumber", this.extNumber);
+          // console.log("SUCCESS");
+          // console.log("jobDescription", this.jobDescription);
+          // console.log("department", this.department);
+          // console.log("roomNumber", this.roomNumber);
+          // console.log("phone", this.phone);
+          // console.log("extNumber", this.extNumber);
 
           await this.$store.dispatch("user/updateEmployeeForm", {
             jobDescription: this.jobDescription,

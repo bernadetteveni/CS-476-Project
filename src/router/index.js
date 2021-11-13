@@ -68,7 +68,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/live-chat-view',
+      path: '/live-chat-view/:roomID',
       name: 'live-chat-view',
       component: () => import('@/views/LiveChat.vue'), 
       meta: {
