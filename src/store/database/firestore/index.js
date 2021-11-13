@@ -27,6 +27,7 @@ export default {
     studentAppointments: [],
     employeeAppointments: [],
     studentWalkIns: [],
+    employeeWalkIns: [],
   },
   getters: {
     getFirebaseVariable: state => {
@@ -39,8 +40,10 @@ export default {
   },
   mutations: { // COMMIT NO LOGIC - ONLY CHANGE STATE
     
+    addToEmployeeWalkIns(state, data) {
+      state.employeeWalkIns.push(data)
+    },
     addToStudentWalkIns(state, data) {
-      console.log("adding to student walkins in VUEX",data)
       state.studentWalkIns.push(data)
     },
     addToMyEmployeeAppointments(state, data) {
@@ -50,6 +53,9 @@ export default {
       state.employeeAppointments = []
     },
     
+    eraseEmployeeWalkIns(state) {
+      state.employeeWalkIns = []
+    },
     eraseStudentWalkIns(state) {
       state.studentWalkIns = []
     },
@@ -69,11 +75,9 @@ export default {
       state.firebaseVariable = data
     },
     addToEmployeeListOfAppointments(state, appt) {
-      // mutate state
       state.employeeListOfAppointments.push(appt)
     },
     addToEmployeeList(state, employee) {
-      // mutate state
       state.employeeList.push(employee)
     }
 
@@ -151,6 +155,23 @@ export default {
       });
     },
     
+    async downloadMyEmployeeWalkIns({ commit }, email) {
+      commit('eraseEmployeeWalkIns');
+      const date = formatDate(new Date())
+      // console.log("USING TODAYS DATE AS", date)
+      const q = query(
+        collection(db, "walkIn"),
+        where("employeeEmail", "==", email),
+      );
+      const querySnapshot = await getDocs(q);
+      await querySnapshot.forEach((doc) => {
+        console.log("firebase adding a walk in",doc.data())
+        commit('addToEmployeeWalkIns', doc.data());
+      });
+    },
+
+
+
     async downloadMyStudentWalkIns({ commit }, email) {
       console.log("INSIDE FIRESTORE walkins download", email)
       commit('eraseStudentWalkIns');

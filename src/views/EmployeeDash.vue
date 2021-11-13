@@ -25,10 +25,11 @@
     <!-- alert -->
 
     <!-- alert for walk in requests-->
+    <div v-for="(walkin, index) in walkInsList" :key="index">
     <b-alert
       v-height-fade.appear
       variant="warning"
-      :show="showWalkInRequests"
+      :show="walkInsList.length>0"
       class="mb-3 d-flex flex-row justify-content-between"
     >
       <div class="alert-body">
@@ -38,29 +39,29 @@
           style="height: 23px; width: 23px"
         />
 
-        Chat request from student [student name] sent 2021.01.01 00:00
+        Chat request from student {{walkin.studentName}} now.
       </div>
 
       <div>
         <b-button
           v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-          v-b-modal.modal-login
           variant="outline-success"
           class="mx-2"
+          @click="goToMeetingRoom(walkin.id)"
         >
           Accept
         </b-button>
 
         <b-button
           v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-          v-b-modal.modal-login
           variant="outline-danger"
-          class=""
+          @click="cancelWalkIn(walkin.id)"
         >
           Deny
         </b-button>
       </div>
     </b-alert>
+  </div>
     <!-- alert -->
 
     <b-button
@@ -312,10 +313,26 @@ export default {
           JSON.stringify(this.appointmentsList)
         );
       });
+
+      this.$store
+      .dispatch(
+        "database/downloadMyEmployeeWalkIns",
+        this.$store.state.user.user.userEmail
+      )
+      .then(() => {
+        this.walkInsList = [];
+        this.walkInsList = this.$store.getters["database/getMyEmployeeWalkIns"];
+        // console.log(this.walkInsList);
+        this.walkInsList = JSON.parse(JSON.stringify(this.walkInsList));
+        // console.log(this.walkInsList);
+      });
+
+
   },
   data() {
     return {
       appointmentsList: [],
+      walkInsList: [],
       value: "",
       showEmployeeGetAdditionalData: false,
       showWalkInRequests: true,
@@ -351,6 +368,19 @@ export default {
         })
 
      
+    },
+    cancelWalkIn(arg) {
+      // CALL VUEX
+      this.$store.dispatch("database/cancelWalkIn", arg).then(() => {
+        this.$store.dispatch("database/downloadMyEmployeeWalkIns",
+          this.$store.state.user.user.userEmail
+      )
+      .then(() => {
+        this.walkInsList =
+          this.$store.getters["database/getMyEmployeeWalkIns"];
+        this.walkInsList = JSON.parse(JSON.stringify(this.walkInsList));
+      });
+      });
     },
     cancelAppointment(arg) {
       // CALL VUEX

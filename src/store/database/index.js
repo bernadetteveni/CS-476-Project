@@ -13,6 +13,10 @@ export default {
         getMyEmployeeAppointments: state => {
             return JSON.parse(JSON.stringify(state.firestore.employeeAppointments))
         },
+        
+        getMyEmployeeWalkIns: state => {
+            return JSON.parse(JSON.stringify(state.firestore.employeeWalkIns))
+        },
         getMyStudentWalkIns: state => {
             return JSON.parse(JSON.stringify(state.firestore.studentWalkIns))
         },
@@ -58,6 +62,16 @@ export default {
         async downloadMyEmployeeAppointments({ dispatch },email) {
             return new Promise(async (resolve, reject) => {
                 await dispatch('firestore/downloadMyEmployeeAppointments',email);
+                resolve()
+            }, response => {
+                console.log("error line 36")
+                // error in loading data
+                reject()
+            })
+        },
+        async downloadMyEmployeeWalkIns({ dispatch },email) {
+            return new Promise(async (resolve, reject) => {
+                await dispatch('firestore/downloadMyEmployeeWalkIns',email);
                 resolve()
             }, response => {
                 console.log("error line 36")

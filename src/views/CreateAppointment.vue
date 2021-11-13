@@ -158,7 +158,7 @@ export default {
   },
   watch: {
     date: function (newDate) {
-      console.log("Current vaules:" + newDate);
+      // console.log("Current vaules:" + newDate);
       this.queryAppointments(newDate);
     },
   },
@@ -167,12 +167,13 @@ export default {
       const RTDBLocation = 'walkin/' + employeeEmail.replace('@',"!").replace('.','=')
                                   +"_"+this.$store.state.user.user.userEmail.replace('@',"!").replace('.','=')
                                   +"_"+ this.date;
-      console.log(RTDBLocation)
+      // console.log(RTDBLocation)
       this.titleForAppointment = "hardcoded titile"
       const newData = {
         "employeeEmail": employeeEmail,
         "employeeName": employeeName,
         "studentEmail": this.$store.state.user.user.userEmail,
+        "studentName": this.$store.state.user.user.firstName + ' '+this.$store.state.user.user.lastName,
         "id": RTDBLocation,
       }
 
