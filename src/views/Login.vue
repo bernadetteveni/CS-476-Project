@@ -215,7 +215,6 @@ export default {
           .then((userCredential)=>{
             const user = userCredential.user;
             //console.log(user);
-            //TODO: 
             this.$store.dispatch('user/getUserProfile').then(() => {
                 if (this.$store.state.user.user.SelectedStudentOrEmployee == "Student"){
                   this.$router.push({ name: 'student-dashboard' })
