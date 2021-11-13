@@ -124,6 +124,7 @@ export default {
   },
   methods: {
     logout() {
+      this.$store.dispatch('user/logout')
       const auth = getAuth();
       signOut(auth).then(()=>{
         // Sign out successful

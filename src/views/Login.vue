@@ -140,13 +140,12 @@ import {
 } from "bootstrap-vue";
 import { required, email } from "@validations";
 import { togglePasswordVisibility } from "@core/mixins/ui/forms";
-import store from "@/store/index";
 import ToastificationContent from "@core/components/toastification/ToastificationContent.vue";
 import { BFormRadio } from "bootstrap-vue";
 import useAppConfig from "@core/app-config/useAppConfig";
 import { computed } from "@vue/composition-api";
 import { getAuth, setPersistence, signInWithEmailAndPassword ,browserLocalPersistence} from '@firebase/auth';
-import router from '@/router';
+
 
 export default {
   setup() {
@@ -192,11 +191,11 @@ export default {
       return this.passwordFieldType === "password" ? "EyeIcon" : "EyeOffIcon";
     },
     imgUrl() {
-      if (store.state.appConfig.layout.skin === "dark") {
+      if (this.$store.state.appConfig.layout.skin === "dark") {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.sideImg = require("@/assets/images/pages/UR_Logo_Primary_Reverse_White.png");
         return this.sideImg;
-      } else if (store.state.appConfig.layout.skin === "light") {
+      } else if (this.$store.state.appConfig.layout.skin === "light") {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.sideImg = require("@/assets/images/pages/UR_Logo_Primary_Black.png");
         return this.sideImg;
@@ -217,14 +216,13 @@ export default {
             const user = userCredential.user;
             //console.log(user);
             //TODO: 
-            store.dispatch('user/getUserProfile').then(() => {
-                if (store.state.user.user.SelectedStudentOrEmployee == "Student"){
-                  router.push({ name: 'student-dashboard' })
+            this.$store.dispatch('user/getUserProfile').then(() => {
+                if (this.$store.state.user.user.SelectedStudentOrEmployee == "Student"){
+                  this.$router.push({ name: 'student-dashboard' })
                 } else {
-                router.push({ name: 'employee-dashboard' })
+                  this.$router.push({ name: 'employee-dashboard' })
                 } 
             })
-
             
             }).catch((error)=>{
               // Error for sign in with email

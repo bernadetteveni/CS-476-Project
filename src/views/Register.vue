@@ -318,7 +318,7 @@ export default {
             // Save all user data under 'users' collection
             try{
               const docRef = await addDoc(usersCollection, {
-                status: this.status,
+                status: "Not Available",
                 firstName: this.firstName,
                 lastName: this.lastName,
                 userEmail: this.userEmail,

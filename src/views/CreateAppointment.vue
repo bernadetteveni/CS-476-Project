@@ -20,7 +20,7 @@
           <h4 class="media-heading">
             {{ employee.firstName }}
             {{ employee.lastName }}
-            (status:{{ employee.status }})
+            ({{ employee.status }})
           </h4>
           <b-card-text class="mb-0">
             <div>
@@ -60,7 +60,7 @@
                   </b-button>
 
                   <b-button
-                    v-if="employee.status == true"
+                    v-if="employee.status == 'Available'"
                     block
                     variant="outline-secondary"
                   >

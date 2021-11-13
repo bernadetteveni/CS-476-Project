@@ -1,7 +1,7 @@
 import { usersCollection,db } from "@/firebaseConfig"
-import {getDocs,query, where} from 'firebase/firestore'
+import {getDocs,query, where,doc,updateDoc} from 'firebase/firestore'
 import { getAuth } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
+
 
 export default {
   namespaced: true, // names will not collide with other modules
@@ -32,7 +32,31 @@ export default {
       },
   },
   actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
-      async getUserProfile ({ commit }) {
+    async logout ({ commit }) {
+      console.log("Logging out in VUEX")
+      var email = '1'
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (user !== null) {
+        email = user.auth.currentUser.email;
+      }
+      
+      const q = query(usersCollection, where("userEmail", "==", email));
+
+      const querySnapshot = await getDocs(q);
+      await querySnapshot.forEach(async (document) => {
+        commit('SET_USER_PROFILE', null);
+        // console.log("Updating firebase user to Not available",document.data())
+        await updateDoc( doc(db, "users", document.ref.id),
+          {
+            status: "Not available"
+          })
+        
+      });
+    },
+    
+    
+    async getUserProfile ({ commit }) {
         console.log("Getting user profile")
         var email = '1'
         const auth = getAuth();
@@ -44,12 +68,12 @@ export default {
         const q = query(usersCollection, where("userEmail", "==", email));
 
         const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          commit('SET_USER_PROFILE', doc.data());
-        //   if(doc.data().SelectedStudentOrEmployee == "Employee"){
-        //     console.log(doc.data().SelectedStudentOrEmployee);
-        //     commit('UPDATE_TEXT', "Employee Dashboard");
-        //  }
+        await querySnapshot.forEach(async (document) => {
+          commit('SET_USER_PROFILE', document.data());
+          await updateDoc( doc(db, "users", document.ref.id),
+          {
+            status: "Available"
+          } )
         });
       },
 
