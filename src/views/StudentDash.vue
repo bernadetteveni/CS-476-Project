@@ -1,5 +1,47 @@
 <template>
   <div>
+    <div v-for="(walkin, index) in walkInsList" :key="index">
+      <!-- alert for walk in requests-->
+      <b-alert
+        v-height-fade.appear
+        :show="walkInsList.length>0"
+        variant="warning"
+        class="mb-3 d-flex flex-row justify-content-between"
+      >
+        <div class="alert-body">
+          <feather-icon
+            icon="MessageSquareIcon"
+            class="mr-50"
+            style="height: 23px; width: 23px"
+          />
+          You have a pending walk-in appointment with
+          {{ walkin.employeeName }} now.
+        </div>
+
+        <div>
+          <b-button
+            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+            v-b-modal.modal-login
+            variant="outline-success"
+            class="mx-2"
+            @click="goToMeetingRoom(walkin.id)"
+          >
+            Chat
+          </b-button>
+
+          <b-button
+            v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+            v-b-modal.modal-login
+            variant="outline-danger"
+            @click="cancelWalkIn(walkin.id)"
+          >
+            Cancel
+          </b-button>
+        </div>
+      </b-alert>
+    </div>
+    <!-- alert -->
+
     <div>
       <b-card
         @click="$router.push({ name: 'create-appointment' })"
@@ -39,7 +81,7 @@
             <h4 class="ml-2 media-heading">
               {{ appointment.date }} at {{ appointment.time }}
             </h4>
-            <b-card-text >
+            <b-card-text>
               <div class="">
                 <div class="row ml-1">
                   <div class="col">
@@ -60,7 +102,11 @@
                       Join Meeting
                     </b-button>
 
-                    <b-button block variant="outline-secondary" @click="cancelAppointment(appointment.id)">
+                    <b-button
+                      block
+                      variant="outline-secondary"
+                      @click="cancelAppointment(appointment.id)"
+                    >
                       Cancel Appointment
                     </b-button>
                   </div>
@@ -75,11 +121,14 @@
 </template>
 
 <script>
+import Ripple from "vue-ripple-directive";
+import { heightFade } from "@core/directives/animations";
 import {
   BMedia,
   BFormTimepicker,
   BImg,
   BCard,
+  BAlert,
   BFormInput,
   BCardText,
   BButton,
@@ -92,15 +141,21 @@ export default {
     BFormDatepicker,
     BCard,
     BFormInput,
+    BAlert,
     BButton,
     BFormTimepicker,
     BMedia,
     BImg,
     BCardText,
   },
+  directives: {
+    "height-fade": heightFade,
+    Ripple,
+  },
   data() {
     return {
       appointmentsList: [],
+      walkInsList: [],
     };
   },
   beforeCreate() {
@@ -112,36 +167,69 @@ export default {
       .then(() => {
         this.appointmentsList =
           this.$store.getters["database/getMyStudentAppointments"];
-        // console.log(this.appointmentsList)
+        console.log(this.appointmentsList);
         this.appointmentsList = JSON.parse(
           JSON.stringify(this.appointmentsList)
         );
       });
+
+    this.$store
+      .dispatch(
+        "database/downloadMyStudentWalkIns",
+        this.$store.state.user.user.userEmail
+      )
+      .then(() => {
+        this.walkInsList = [];
+        this.walkInsList = this.$store.getters["database/getMyStudentWalkIns"];
+        console.log(this.walkInsList);
+        this.walkInsList = JSON.parse(JSON.stringify(this.walkInsList));
+        console.log(this.walkInsList);
+      });
   },
-  
+
   methods: {
     goToMeetingRoom(eventID) {
-      console.log("in got to meeting with ", eventID)
+      console.log("in got to meeting with ", eventID);
       this.$router.push({
-        name: 'live-chat-view',
+        name: "live-chat-view",
         params: {
-          roomID: eventID
-        }
-      })
+          roomID: eventID,
+        },
+      });
+    },
+    cancelWalkIn(arg) {
+      // CALL VUEX
+      this.$store.dispatch("database/cancelWalkIn", arg).then(() => {
+        this.$store
+      .dispatch(
+        "database/downloadMyStudentWalkIns",
+        this.$store.state.user.user.userEmail
+      )
+      .then(() => {
+        this.walkInsList =
+          this.$store.getters["database/getMyStudentWalkIns"];
+        // console.log(this.appointmentsList)
+        this.walkInsList = JSON.parse(JSON.stringify(this.walkInsList));
+      });
+      });
     },
     cancelAppointment(arg) {
       // CALL VUEX
-      this.$store.dispatch("database/cancelAppointment",arg).then(()=>{
-          this.$store.dispatch("database/downloadMyStudentAppointments",
-            this.$store.state.user.user.userEmail).then(() => {
-              this.appointmentsList =
+      this.$store.dispatch("database/cancelAppointment", arg).then(() => {
+        this.$store
+          .dispatch(
+            "database/downloadMyStudentAppointments",
+            this.$store.state.user.user.userEmail
+          )
+          .then(() => {
+            this.appointmentsList =
               this.$store.getters["database/getMyStudentAppointments"];
             // console.log(this.appointmentsList)
             this.appointmentsList = JSON.parse(
               JSON.stringify(this.appointmentsList)
             );
           });
-      })
+      });
     },
     disableButton(date) {
       // console.log(date);
@@ -156,14 +244,13 @@ export default {
       const today = [year, month, day].join("-");
 
       // console.log("today",today);
-      
+
       if (date > today) {
         return true;
       } else {
-        return false
+        return false;
       }
-
-    }
+    },
   },
 };
 </script>

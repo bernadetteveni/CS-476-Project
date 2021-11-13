@@ -26,6 +26,7 @@ export default {
     employeeList: [],
     studentAppointments: [],
     employeeAppointments: [],
+    studentWalkIns: [],
   },
   getters: {
     getFirebaseVariable: state => {
@@ -37,11 +38,20 @@ export default {
     },
   },
   mutations: { // COMMIT NO LOGIC - ONLY CHANGE STATE
+    
+    addToStudentWalkIns(state, data) {
+      console.log("adding to student walkins in VUEX",data)
+      state.studentWalkIns.push(data)
+    },
     addToMyEmployeeAppointments(state, data) {
       state.employeeAppointments.push(data)
     },
     eraseMyEmployeeAppointments(state) {
       state.employeeAppointments = []
+    },
+    
+    eraseStudentWalkIns(state) {
+      state.studentWalkIns = []
     },
     eraseStudentAppointments(state) {
       state.studentAppointments = []
@@ -69,6 +79,32 @@ export default {
 
   },
   actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
+
+    async cancelWalkIn({ }, eventID) {
+      // console.log("FROM firebase/cancelAppoiintment with ", eventID)
+
+      // Remove a room (REALTIME_DB)
+      set(ref(realTimeDB, eventID), null)
+        .then(() => {
+          console.log(" // Data removed successfully!")
+        })
+        .catch((error) => {
+          console.log("error", error) // The write failed...
+        });
+
+      // REMOVE room in Firestore
+      var q = query(
+        collection(db,'walkIn'),
+        where('id', '==', eventID)
+      );
+      const querySnapshot = await getDocs(q);
+      await querySnapshot.forEach( (document) => {
+        // console.log("deleting doc->", document.data())
+        // console.log("doc.ref",document.ref.id)
+         deleteDoc( doc(db, "walkIn", document.ref.id) );
+      });
+    },
+
 
     async cancelAppointment({ }, eventID) {
       // console.log("FROM firebase/cancelAppoiintment with ", eventID)
@@ -114,6 +150,25 @@ export default {
         commit('addToMyEmployeeAppointments', doc.data());
       });
     },
+    
+    async downloadMyStudentWalkIns({ commit }, email) {
+      console.log("INSIDE FIRESTORE walkins download", email)
+      commit('eraseStudentWalkIns');
+      const date = formatDate(new Date())
+      // console.log("USING TODAYS DATE AS", date)
+      const q = query(
+        collection(db, "walkIn"),
+        where("studentEmail", "==", email),
+      );
+      const querySnapshot = await getDocs(q);
+      await querySnapshot.forEach((doc) => {
+        console.log("firebase adding a walk in",doc.data())
+        commit('addToStudentWalkIns', doc.data());
+      });
+    },
+
+
+
 
     async downloadMyStudentAppointments({ commit }, email) {
       commit('eraseStudentAppointments');
@@ -150,6 +205,24 @@ export default {
     },
     testFirebaseAction({ commit }, data) {
       commit('UPDATE_firebaseVariable', data);
+    },
+    async createWalkIn({ }, data) {
+      // API CALL TO firebase and set the data
+      // Create a room (REALTIME_DB)
+
+      set(ref(realTimeDB, data.RTDBLocation), data.newData)
+        .then(() => {
+          console.log(" // Data saved successfully!")
+        })
+        .catch((error) => {
+          console.log("error", error) // The write failed...
+
+        });
+
+      // TODO add newData to firestore (appoinments collection )
+      // Add a new document in collection "cities"
+      const docRef = await addDoc(collection(db, "walkIn"), data.newData);
+      // console.log("Document written to firestore with ID: ", docRef.id);
     },
     async createAppointment({ }, data) {
       // console.log("FROM createAppointment", data)

@@ -13,6 +13,9 @@ export default {
         getMyEmployeeAppointments: state => {
             return JSON.parse(JSON.stringify(state.firestore.employeeAppointments))
         },
+        getMyStudentWalkIns: state => {
+            return JSON.parse(JSON.stringify(state.firestore.studentWalkIns))
+        },
         getMyStudentAppointments: state => {
             return JSON.parse(JSON.stringify(state.firestore.studentAppointments))
         },
@@ -32,6 +35,16 @@ export default {
         },
     },
     actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
+        async cancelWalkIn({ dispatch },eventID) {
+            return new Promise(async (resolve, reject) => {
+                await dispatch('firestore/cancelWalkIn',eventID);
+                resolve()
+            }, response => {
+                console.log("error line 40")
+                // error in loading data
+                reject()
+            })
+        },
         async cancelAppointment({ dispatch },eventID) {
             return new Promise(async (resolve, reject) => {
                 await dispatch('firestore/cancelAppointment',eventID);
@@ -52,6 +65,16 @@ export default {
                 reject()
             })
         },
+        async downloadMyStudentWalkIns({ dispatch },email) {
+            return new Promise(async (resolve, reject) => {
+                await dispatch('firestore/downloadMyStudentWalkIns',email);
+                resolve()
+            }, response => {
+                console.log("error line 36")
+                // error in loading data
+                reject()
+            })
+        },
         async downloadMyStudentAppointments({ dispatch },email) {
             return new Promise(async (resolve, reject) => {
                 await dispatch('firestore/downloadMyStudentAppointments',email);
@@ -65,6 +88,15 @@ export default {
         async getEmployeesList({ dispatch }) {
             return new Promise(async (resolve, reject) => {
                 await dispatch('firestore/getEmployeesList');
+                resolve()
+            }, response => {
+                // error in loading data
+                reject()
+            })
+        },
+        async createWalkIn({ dispatch }, data) {
+            return new Promise(async (resolve, reject) => {
+                await dispatch('firestore/createWalkIn', data);
                 resolve()
             }, response => {
                 // error in loading data

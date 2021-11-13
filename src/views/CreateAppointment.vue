@@ -63,7 +63,7 @@
                     v-if="employee.status == 'Available'"
                     block
                     variant="outline-secondary"
-                    @click="sendWalkInAppointmentRequest(employee.userEmail)"
+                    @click="sendWalkInAppointmentRequest(employee.userEmail, employee.firstName + ' ' + employee.lastName)"
                   >
                     Chat Now
                   </b-button>
@@ -163,6 +163,32 @@ export default {
     },
   },
   methods: {
+    async sendWalkInAppointmentRequest(employeeEmail, employeeName) {
+      const RTDBLocation = 'walkin/' + employeeEmail.replace('@',"!").replace('.','=')
+                                  +"_"+this.$store.state.user.user.userEmail.replace('@',"!").replace('.','=')
+                                  +"_"+ this.date;
+      console.log(RTDBLocation)
+      this.titleForAppointment = "hardcoded titile"
+      const newData = {
+        "employeeEmail": employeeEmail,
+        "employeeName": employeeName,
+        "studentEmail": this.$store.state.user.user.userEmail,
+        "id": RTDBLocation,
+      }
+
+      var data = {}
+      data.RTDBLocation = RTDBLocation
+      data.newData = newData;
+      await this.$store.dispatch('database/createWalkIn',data).then( () => {
+        this.$router.push({
+          name: 'live-chat-view',
+          params: {
+            roomID: RTDBLocation
+          }
+        })
+
+      })
+    },
     async queryAppointments(date) {
       var data = {}
       data.date = date;
