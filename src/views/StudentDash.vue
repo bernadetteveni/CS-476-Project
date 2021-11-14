@@ -167,7 +167,7 @@ export default {
       .then(() => {
         this.appointmentsList =
           this.$store.getters["database/getMyStudentAppointments"];
-        console.log(this.appointmentsList);
+        // console.log(this.appointmentsList);
         this.appointmentsList = JSON.parse(
           JSON.stringify(this.appointmentsList)
         );
@@ -181,7 +181,7 @@ export default {
       .then(() => {
         this.walkInsList = [];
         this.walkInsList = this.$store.getters["database/getMyStudentWalkIns"];
-        console.log(this.walkInsList);
+        // console.log(this.walkInsList);
         this.walkInsList = JSON.parse(JSON.stringify(this.walkInsList));
         console.log(this.walkInsList);
       });
@@ -189,7 +189,7 @@ export default {
 
   methods: {
     goToMeetingRoom(eventID) {
-      console.log("in got to meeting with ", eventID);
+      // console.log("in got to meeting with ", eventID);
       this.$router.push({
         name: "live-chat-view",
         params: {
