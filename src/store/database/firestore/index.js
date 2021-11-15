@@ -89,6 +89,31 @@ export default {
   actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
 
     
+    async cancelAppointment({ }, eventID) {
+      // console.log("FROM firebase/cancelAppoiintment with ", eventID)
+
+      // Remove a room (REALTIME_DB)
+      set(ref(realTimeDB, eventID), null)
+        .then(() => {
+          console.log(" // Data removed successfully!")
+        })
+        .catch((error) => {
+          console.log("error", error) // The write failed...
+        });
+
+      // REMOVE room in Firestore
+      var q = query(
+        collection(db, 'appointments'),
+        where('id', '==', eventID)
+      );
+      const querySnapshot = await getDocs(q);
+      await querySnapshot.forEach((document) => {
+        // console.log("deleting doc->", document.data())
+        // console.log("doc.ref",document.ref.id)
+        deleteDoc(doc(db, "appointments", document.ref.id));
+      });
+    },
+
 
     async cancelWalkIn({ }, eventID) {
       // console.log("FROM firebase/cancelAppoiintment with ", eventID)
