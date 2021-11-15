@@ -164,7 +164,7 @@ export default {
   },
   methods: {
     async sendWalkInAppointmentRequest(employeeEmail, employeeName) {
-      const RTDBLocation = 'walkin/' + employeeEmail.replace('@',"!").replace('.','=')
+      const RTDBLocation = 'walkin/WALKIN-' + employeeEmail.replace('@',"!").replace('.','=')
                                   +"_"+this.$store.state.user.user.userEmail.replace('@',"!").replace('.','=')
                                   +"_"+ this.date;
       // console.log(RTDBLocation)
@@ -232,7 +232,7 @@ export default {
     //     "title": "hello1",
     // }
 
-      const RTDBLocation = 'rooms/' + this.employeeList[this.employeePicked].ID
+      const RTDBLocation = 'appointments/APPOINTMENT-' + this.employeeList[this.employeePicked].ID
                                   +"_"+this.employeeList[this.employeePicked].lastName 
                                   +"_"+this.$store.state.user.user.lastName 
                                   +"_"+ this.date

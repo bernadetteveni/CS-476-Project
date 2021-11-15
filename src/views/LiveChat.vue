@@ -24,9 +24,9 @@
       v-ripple.400="'rgba(113, 102, 240, 0.15)'"
       variant="outline-primary"
       class="btn-block mb-2"
-      @click="cancelWalkIn()"
+      @click="isWalkIn ? cancelWalkIn() : cancelAppointment()"
     >
-      Cancel this Appointment
+      Cancel this Chat
     </b-button>
 
     
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+  var unsubFromWalkin;
+  var unsubFromAppointment;
 // <b-input-group>
 //         <b-form-input placeholder="Button on right" v-model="userMessage"/>
 //         <b-input-group-append>
@@ -76,8 +78,9 @@ import CardAdvanceChat from "@/views/CardAdvanceChat.vue";
 export default {
   data() {
     return {
-      unsub: null, // firestore document listener unsibstribe
       eventDocument: null,
+      isWalkIn: false,
+      isAppointment: false,
     };
   },
   directives: {
@@ -97,35 +100,71 @@ export default {
     BCardText,
   },
   async mounted() {
-    // Get walkin Info to fill out the data
-    var q = query(
-      collection(db, "walkIn"),
-      where("id", "==", this.$route.params.roomID)
-    );
-    const querySnapshot = await getDocs(q);
+    // Check if we are a walkin or appointment
+    if (this.$route.params.roomID[0] == 'a'){
+      // console.log("WERE IN AN APPOINTMENT")
+      this.isAppointment = true
+    } else {
+      // console.log("WERE IN WALKIN")
+      this.isWalkIn = true;
+    }
 
-    await querySnapshot.forEach((document) => {
-      this.eventDocument = document.data();
-      // console.log("deleting doc->", document.data())
-      // console.log("doc.ref",document.ref.id)
-      //  deleteDoc( doc(db, "appointments", document.ref.id) );
+    if (this.isWalkIn) {
+        // Get walkin Info to fill out the data
+        var q = query(
+          collection(db, "walkIn"),
+          where("id", "==", this.$route.params.roomID)
+        );
+        const querySnapshot = await getDocs(q);
 
-      // For the person getting cancelled on i.e neeeds to be kicked out
-      // Listen for WalkIn cancellation then show a popup that it was cancelled with a link to go home
-      // Every time this document changes, run this arrow function
-      this.unsub = onSnapshot(
-        doc(db, "walkIn", document.ref.id),
-        this.handleEventUpdate
+        await querySnapshot.forEach((document) => {
+          this.eventDocument = document.data();
+          // console.log("deleting doc->", document.data())
+          // console.log("doc.ref",document.ref.id)
+          //  deleteDoc( doc(db, "appointments", document.ref.id) );
+
+          // For the person getting cancelled on i.e neeeds to be kicked out
+          // Listen for WalkIn cancellation then show a popup that it was cancelled with a link to go home
+          // Every time this document changes, run this arrow function
+          unsubFromWalkin = onSnapshot(
+            doc(db, "walkIn", document.ref.id),
+            this.handleEventUpdate
+          );
+        });
+    } else {
+      // APPOINTMENT
+      var q = query(
+        collection(db, "appointments"),
+        where("id", "==", this.$route.params.roomID)
       );
-    });
+      const querySnapshot = await getDocs(q);
 
-    // VUEX Start listening for Messages
+      await querySnapshot.forEach((document) => {
+        this.eventDocument = document.data();
+        // console.log("deleting doc->", document.data())
+        // console.log("doc.ref",document.ref.id)
+        //  deleteDoc( doc(db, "appointments", document.ref.id) );
+
+        // For the person getting cancelled on i.e neeeds to be kicked out
+        // Listen for WalkIn cancellation then show a popup that it was cancelled with a link to go home
+        // Every time this document changes, run this arrow function
+        unsubFromAppointment = onSnapshot(
+          doc(db, "appointments", document.ref.id),
+          this.handleEventUpdate
+        );
+      });
+    }
+    
   },
   beforeDestroy() {
     this.$store.dispatch("user/getUserProfile"); // Set employee to status Available.
-    this.unsub(); // Stop listening for cancellation of this walk in.
+    unsubFromWalkin(); // Stop listening for cancellation of this walk in.
+    unsubFromAppointment();
   },
   methods: {
+    cancelAppointment() {
+      console.log("cancelling appointment")
+    },
     handleEventUpdate(doc) {
       // this.$store.commit('database/firestore/updateCurrentChatEvent',doc.data)
       // console.log("Current event document was updated to: ", doc.data());
@@ -137,6 +176,8 @@ export default {
       }
     },
     cancelWalkIn() {
+      console.log("cancelling WALKIN")
+
       // For the person cancelling
       this.$store
         .dispatch("database/cancelWalkIn", this.$route.params.roomID)

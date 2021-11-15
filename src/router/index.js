@@ -177,7 +177,7 @@ router.beforeEach((to, _, next) => {
       if (!store.state.user.user.SelectedStudentOrEmployee) {
         store.dispatch('user/getUserProfile').then(() => {
 
-          console.log("Router: role=", store.state.user.user.SelectedStudentOrEmployee)
+          // console.log("Router: role=", store.state.user.user.SelectedStudentOrEmployee)
           if (to.meta.rule == "studentOnly" && store.state.user.user.SelectedStudentOrEmployee != "Student") {
             //console.log("Not a student going to a student only page")
             next({ name: 'error-404' }) 
@@ -192,7 +192,7 @@ router.beforeEach((to, _, next) => {
         })
       } else {
         
-        console.log("Router: role=", store.state.user.user.SelectedStudentOrEmployee)
+        // console.log("Router: role=", store.state.user.user.SelectedStudentOrEmployee)
         if (to.meta.rule == "studentOnly" && store.state.user.user.SelectedStudentOrEmployee != "Student") {
           //console.log("Not a student going to a student only page")
           next({ name: 'error-404' }) 

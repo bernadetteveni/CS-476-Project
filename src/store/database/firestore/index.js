@@ -179,7 +179,7 @@ export default {
 
 
     async downloadMyStudentWalkIns({ commit }, email) {
-      console.log("INSIDE FIRESTORE walkins download", email)
+      // console.log("INSIDE FIRESTORE walkins download", email)
       commit('eraseStudentWalkIns');
       const date = formatDate(new Date())
       // console.log("USING TODAYS DATE AS", date)

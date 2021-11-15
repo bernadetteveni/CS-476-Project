@@ -44,7 +44,7 @@
 
     <div>
       <b-card
-        @click="$router.push({ name: 'create-appointment' })"
+        @click="$router.push({ name: 'create-appointment' }).catch()"
         style="
           object-fit: fill;
           width: 400px;
@@ -183,7 +183,7 @@ export default {
         this.walkInsList = this.$store.getters["database/getMyStudentWalkIns"];
         // console.log(this.walkInsList);
         this.walkInsList = JSON.parse(JSON.stringify(this.walkInsList));
-        console.log(this.walkInsList);
+        // console.log(this.walkInsList);
       });
   },
 

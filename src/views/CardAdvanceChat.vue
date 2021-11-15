@@ -184,6 +184,7 @@ export default {
           this.$store.state.user.user.lastName,
         dateTime: this.formatDate(),
       });
+      this.chatInputMessage = ""
     },
 
     addAMessage(newMessage) {
@@ -193,7 +194,7 @@ export default {
         time: newMessage.dateTime,
         senderName: newMessage.senderName,
         senderEmail: newMessage.senderEmail,
-        senderId: newMessage.senderEmail,
+        sender: newMessage.senderEmail,
       });
       this.chatInputMessage = "";
 

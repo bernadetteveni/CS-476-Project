@@ -2,26 +2,22 @@
   <div class="chats">
     <div
       v-for="(msgGrp, index) in formattedChatData.formattedChatLog"
-      :key="msgGrp.senderId+String(index)"
+      :key="msgGrp.sender + index"
       class="chat"
-      :class="{'chat-left': msgGrp.senderId === formattedChatData.contact.id}"
+      :class="{'chat-left': msgGrp.sender == formattedChatData.contact.id}"
     >
-
-
-
-
       <div class="chat-avatar">
         <b-avatar
           size="36"
           class="avatar-border-2 box-shadow-1"
           variant="transparent"
-          :src="msgGrp.senderId === formattedChatData.contact.id ? profileEmployeeAvatar : profileUserAvatar"
+          :src="msgGrp.sender === formattedChatData.contact.id ? profileEmployeeAvatar : profileUserAvatar"
         />
       </div>
       <div class="chat-body">
         <div
-          v-for="msgData in msgGrp.messages"
-          :key="msgData.time"
+          v-for="(msgData, index) in msgGrp.messages"
+          :key="msgData.time + index"
           class="chat-content"
         >
           <p>{{ msgData.msg }}</p>
@@ -66,23 +62,23 @@ export default {
       }
 
       const formattedChatLog = []
-      let chatMessageSenderId = chatLog[0] ? chatLog[0].senderId : undefined
+      let chatMessageSender = chatLog[0] ? chatLog[0].sender : undefined
       let msgGroup = {
-        sender: chatMessageSenderId,
+        sender: chatMessageSender,
         messages: [],
       }
 
       chatLog.forEach((msg, index) => {
-        if (chatMessageSenderId === msg.senderId) {
+        if (chatMessageSender === msg.sender) {
           msgGroup.messages.push({
             msg: msg.message,
             time: msg.time,
           })
         } else {
-          chatMessageSenderId = msg.senderId
+          chatMessageSender = msg.sender
           formattedChatLog.push(msgGroup)
           msgGroup = {
-            senderId: msg.senderId,
+            sender: msg.sender,
             messages: [
               {
                 msg: msg.message,
