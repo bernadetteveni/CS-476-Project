@@ -1,6 +1,6 @@
 // THIS IS ALL AWONG THIS IS FIRESTORE MODULE
 
-import { collection, query, where, getDocs, addDoc, orderBy, doc,deleteDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, orderBy, doc, deleteDoc } from "firebase/firestore";
 import { db, realTimeDB } from "@/firebaseConfig";
 import { set, ref } from "firebase/database";
 
@@ -28,6 +28,7 @@ export default {
     employeeAppointments: [],
     studentWalkIns: [],
     employeeWalkIns: [],
+    // currentChatEvent: null,
   },
   getters: {
     getFirebaseVariable: state => {
@@ -39,7 +40,10 @@ export default {
     },
   },
   mutations: { // COMMIT NO LOGIC - ONLY CHANGE STATE
-    
+    // updateCurrentChatEvent(state, data) {
+    //   console.log("UPDATING VUEX CHAT EVENT with", data)
+    //   state.currentChatEvent = data
+    // },
     addToEmployeeWalkIns(state, data) {
       state.employeeWalkIns.push(data)
     },
@@ -52,7 +56,7 @@ export default {
     eraseMyEmployeeAppointments(state) {
       state.employeeAppointments = []
     },
-    
+
     eraseEmployeeWalkIns(state) {
       state.employeeWalkIns = []
     },
@@ -84,6 +88,8 @@ export default {
   },
   actions: { // DISPATCH LOGIC + ASYNC fucntions (firebase)
 
+    
+
     async cancelWalkIn({ }, eventID) {
       // console.log("FROM firebase/cancelAppoiintment with ", eventID)
 
@@ -98,14 +104,14 @@ export default {
 
       // REMOVE room in Firestore
       var q = query(
-        collection(db,'walkIn'),
+        collection(db, 'walkIn'),
         where('id', '==', eventID)
       );
       const querySnapshot = await getDocs(q);
-      await querySnapshot.forEach( (document) => {
+      await querySnapshot.forEach((document) => {
         // console.log("deleting doc->", document.data())
         // console.log("doc.ref",document.ref.id)
-         deleteDoc( doc(db, "walkIn", document.ref.id) );
+        deleteDoc(doc(db, "walkIn", document.ref.id));
       });
     },
 
@@ -124,14 +130,14 @@ export default {
 
       // REMOVE room in Firestore
       var q = query(
-        collection(db,'appointments'),
+        collection(db, 'appointments'),
         where('id', '==', eventID)
       );
       const querySnapshot = await getDocs(q);
-      await querySnapshot.forEach( (document) => {
+      await querySnapshot.forEach((document) => {
         // console.log("deleting doc->", document.data())
         // console.log("doc.ref",document.ref.id)
-         deleteDoc( doc(db, "appointments", document.ref.id) );
+        deleteDoc(doc(db, "appointments", document.ref.id));
       });
     },
 
@@ -154,7 +160,7 @@ export default {
         commit('addToMyEmployeeAppointments', doc.data());
       });
     },
-    
+
     async downloadMyEmployeeWalkIns({ commit }, email) {
       commit('eraseEmployeeWalkIns');
       const date = formatDate(new Date())
@@ -165,7 +171,7 @@ export default {
       );
       const querySnapshot = await getDocs(q);
       await querySnapshot.forEach((doc) => {
-        console.log("firebase adding a walk in",doc.data())
+        console.log("firebase adding a walk in", doc.data())
         commit('addToEmployeeWalkIns', doc.data());
       });
     },
@@ -183,7 +189,7 @@ export default {
       );
       const querySnapshot = await getDocs(q);
       await querySnapshot.forEach((doc) => {
-        console.log("firebase adding a walk in",doc.data())
+        console.log("firebase adding a walk in", doc.data())
         commit('addToStudentWalkIns', doc.data());
       });
     },

@@ -15,32 +15,37 @@
       @hide="goToYourHome"
     >
       <b-card-text>
-      This Walk-in has been cancelled by the other person. You will be returned to your dashboard.
+        This Walk-in has been cancelled by the other person. You will be
+        returned to your dashboard.
       </b-card-text>
     </b-modal>
 
     <b-button
       v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-      variant="outline-warning"
-      class="mx-2"
+      variant="outline-primary"
+      class="btn-block mb-2"
       @click="cancelWalkIn()"
     >
       Cancel this Appointment
     </b-button>
 
-    <b-card :title="$route.params.roomID">
-      {{ $route.params.roomID }}
-      <b-card-text>This is the live chat page.</b-card-text>
-      <b-card-text
-        >Chocolate sesame snaps pie carrot cake pastry pie lollipop muffin.
-        Carrot cake dragée chupa chups jujubes. Macaroon liquorice cookie wafer
-        tart marzipan bonbon. Gingerbread jelly-o dragée chocolate.</b-card-text
-      >
-    </b-card>
+    
+    <card-advance-chat :room="$route.params.roomID" :event="eventDocument" />
   </div>
 </template>
 
 <script>
+// <b-input-group>
+//         <b-form-input placeholder="Button on right" v-model="userMessage"/>
+//         <b-input-group-append>
+//           <b-button variant="outline-primary"
+
+//           @click="sendAMessage">
+//             SEND
+//           </b-button>
+//         </b-input-group-append>
+//       </b-input-group>
+
 import {
   collection,
   query,
@@ -52,20 +57,40 @@ import {
   deleteDoc,
   onSnapshot,
 } from "firebase/firestore";
+import { getDatabase, ref, push, set } from "firebase/database";
 import { db, realTimeDB } from "@/firebaseConfig";
-import { BCard, BCardText, BButton, BModal } from "bootstrap-vue";
+import {
+  BCard,
+  BCardText,
+  BButton,
+  BModal,
+  BInputGroup,
+  BFormInput,
+  BInputGroupAppend,
+  BInputGroupPrepend,
+  BRow,
+  BCol,
+} from "bootstrap-vue";
 import Ripple from "vue-ripple-directive";
+import CardAdvanceChat from "@/views/CardAdvanceChat.vue";
 export default {
   data() {
     return {
       unsub: null, // firestore document listener unsibstribe
-      showExitPopup: false,
+      eventDocument: null,
     };
   },
   directives: {
     Ripple,
   },
   components: {
+    CardAdvanceChat,
+    BInputGroup,
+    BFormInput,
+    BInputGroupAppend,
+    BInputGroupPrepend,
+    BRow,
+    BCol,
     BCard,
     BButton,
     BModal,
@@ -80,6 +105,7 @@ export default {
     const querySnapshot = await getDocs(q);
 
     await querySnapshot.forEach((document) => {
+      this.eventDocument = document.data();
       // console.log("deleting doc->", document.data())
       // console.log("doc.ref",document.ref.id)
       //  deleteDoc( doc(db, "appointments", document.ref.id) );
@@ -92,15 +118,17 @@ export default {
         this.handleEventUpdate
       );
     });
+
+    // VUEX Start listening for Messages
   },
   beforeDestroy() {
     this.$store.dispatch("user/getUserProfile"); // Set employee to status Available.
     this.unsub(); // Stop listening for cancellation of this walk in.
   },
   methods: {
-    methodClose() {},
     handleEventUpdate(doc) {
-      console.log("Current event document was updated to: ", doc.data());
+      // this.$store.commit('database/firestore/updateCurrentChatEvent',doc.data)
+      // console.log("Current event document was updated to: ", doc.data());
       // Check if the document is empty then kick the user out.
       if (doc.data() == null) {
         // console.log("DOCUMENT DELETED")
@@ -108,7 +136,6 @@ export default {
         this.$refs["exit-modal"].show();
       }
     },
-
     cancelWalkIn() {
       // For the person cancelling
       this.$store
