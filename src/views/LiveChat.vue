@@ -5,7 +5,7 @@
       ref="exit-modal"
       id="exit-modal"
       centered
-      title="This Walk-in has been cancelled."
+      title="This Chat has been cancelled."
       ok-only
       ok-title="Dashboard"
       data-backdrop="static"
@@ -15,7 +15,7 @@
       @hide="goToYourHome"
     >
       <b-card-text>
-        This Walk-in has been cancelled by the other person. You will be
+        This Chat has been cancelled by the other person. You will be
         returned to your dashboard.
       </b-card-text>
     </b-modal>
@@ -156,14 +156,20 @@ export default {
     }
     
   },
-  beforeDestroy() {
+  unmounted() {
     this.$store.dispatch("user/getUserProfile"); // Set employee to status Available.
-    unsubFromWalkin(); // Stop listening for cancellation of this walk in.
-    unsubFromAppointment();
+    unsubFromWalkin; // Stop listening for cancellation of this walk in.
+    unsubFromAppointment;
   },
   methods: {
     cancelAppointment() {
       console.log("cancelling appointment")
+      // For the person cancelling
+      this.$store
+        .dispatch("database/cancelAppointment", this.$route.params.roomID)
+        .then(() => {
+          this.goToYourHome();
+        });
     },
     handleEventUpdate(doc) {
       // this.$store.commit('database/firestore/updateCurrentChatEvent',doc.data)
@@ -192,7 +198,7 @@ export default {
         this.$router.push({ name: "employee-dashboard" });
       }
     },
-  },
+  }
 };
 </script>
 
