@@ -196,7 +196,8 @@ export default {
   },
   methods: {
     timeElapsedHandler() {
-      console.log("Timer ran out")
+      console.log("Timer ran out, Cancelling Appointment")
+      this.cancelAppointment()
     },
     cancelAppointment() {
       console.log("cancelling appointment");
