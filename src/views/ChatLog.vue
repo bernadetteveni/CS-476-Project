@@ -20,7 +20,18 @@
           :key="msgData.time + index"
           class="chat-content"
         >
-          <p>{{ msgData.msg }}</p>
+          <div v-if="msgData.file">
+            Filename: <b>{{msgData.fileName}}</b> <a :href="msgData.url" target="_blank" download=""><feather-icon icon="DownloadIcon" size="25"/></a>
+            <br/>
+              <embed  
+                  :src="msgData.url"
+                  height="100">
+          <br/>
+          
+          
+
+          </div>
+          <p v-else>{{ msgData.msg }}</p>
         </div>
       </div>
     </div>
@@ -72,6 +83,9 @@ export default {
         if (chatMessageSender === msg.sender) {
           msgGroup.messages.push({
             msg: msg.message,
+            url: msg.fileURL,
+            fileName:msg.fileName,
+            file: msg.file,
             time: msg.time,
           })
         } else {
@@ -81,6 +95,9 @@ export default {
             sender: msg.sender,
             messages: [
               {
+                file: msg.file,
+                fileName:msg.fileName,
+                url: msg.fileUrl,
                 msg: msg.message,
                 time: msg.time,
               },

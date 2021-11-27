@@ -156,7 +156,7 @@ export default {
         // var time = ['1', '6', ':', '0', '0'];
         // 2021-11-28 00:00:00
 
-        console.log("Appointment time", time.join(""));
+        // console.log("Appointment time", time.join(""));
 
         if (time[3] == "3") {
           time[3] = String.fromCharCode("0".charCodeAt()); // Change from 30 to 00 minutes
@@ -171,7 +171,7 @@ export default {
           // No need to update the hour
           time[3] = String.fromCharCode("3".charCodeAt());
         }
-        console.log("Countdown to the end of appointment", time.join(""));
+        // console.log("Countdown to the end of appointment", time.join(""));
 
         this.countdown = document.data().date + " " + time.join("");
 

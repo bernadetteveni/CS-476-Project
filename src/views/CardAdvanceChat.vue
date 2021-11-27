@@ -19,7 +19,8 @@
       <vue-perfect-scrollbar
         ref="refChatLogPS"
         :settings="perfectScrollbarSettings"
-        class="user-chats scroll-area"
+        class="user-chats scroll-area "
+        style="height: 600px;"
       >
         <chat-log
           :chat-data="chatData"
@@ -37,6 +38,23 @@
           />
         </b-input-group>
         <b-button variant="primary" type="submit"> Send </b-button>
+     
+     
+        <b-overlay
+        class="ml-1"
+      :show="uploading"
+
+      label="Spinning"
+
+        >
+        <b-button variant="primary"  @click="click1">
+          <feather-icon icon="UploadIcon" size="16" />
+        </b-button>
+
+        </b-overlay>
+
+
+        <input type="file" style="display: none" ref="fileToUpload" @change="getFile()"/>
       </b-form>
     </section>
   </b-card>
@@ -44,6 +62,7 @@
 
 <script>
 import {
+  BOverlay,
   BCard,
   BCardHeader,
   BAvatar,
@@ -55,7 +74,7 @@ import {
 
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import ChatLog from "@/views/ChatLog.vue";
-
+import Ripple from 'vue-ripple-directive'
 import {
   getDatabase,
   ref,
@@ -66,8 +85,15 @@ import {
   push,
   set,
 } from "firebase/database";
+import { getStorage,uploadBytesResumable, getDownloadURL,uploadBytes } from "firebase/storage";
+import {ref as refStorage} from  "firebase/storage";
+
 export default {
+  directives: {
+    Ripple,
+  },
   components: {
+    BOverlay,
     BCard,
     BCardHeader,
     BAvatar,
@@ -93,6 +119,12 @@ export default {
   },
   data() {
     return {
+      uploading: false,
+      // For Image upload
+      img1: "",
+      imageData: null,
+      uploadValue: 0,
+
       employeeEmail: null,
       employeeName: null,
       id: null,
@@ -125,7 +157,6 @@ export default {
     };
   },
   computed: {
-    
     nameImChattingWith() {
       // console.log("this.employeeName",this.employeeName)
       // console.log("this.studentName",this.studentName)
@@ -147,19 +178,25 @@ export default {
       this.studentName = val.studentName;
 
       if (this.$store.state.user.user.SelectedStudentOrEmployee == "Student") {
-         this.chatData.contact.id = val.employeeEmail
+        this.chatData.contact.id = val.employeeEmail;
       } else {
-         this.chatData.contact.id = val.studentEmail
+        this.chatData.contact.id = val.studentEmail;
       }
 
-      
       // console.log(this.employeeEmail,this.employeeName,this.id,this.studentEmail , this.studentName )
       // Subscribe for messages from database
 
       const db = getDatabase();
       this.messagesRef = ref(db, this.room + "/messages");
       onChildAdded(this.messagesRef, (data) => {
-        this.addAMessage(JSON.parse(JSON.stringify(data)));
+        
+        var message = JSON.parse(JSON.stringify(data))
+
+        if (message.file){
+          this.addAFile(message)
+        } else {
+          this.addAMessage(message);
+        }
       });
     },
   },
@@ -170,6 +207,74 @@ export default {
     off(this.messagesRef);
   },
   methods: {
+    getFile() {
+      this.File = event.target.files[0];
+      // console.log("uploading a file DUMMY")
+      // console.log(this.File.name)
+      // console.log(this.File)
+
+      const storage = getStorage();
+      const storageRef = refStorage(storage,this.File.name);
+
+      // TODO set uploading text
+      this.uploading = true
+      // 'file' comes from the Blob or File API
+      uploadBytes(storageRef, this.File).then((snapshot) => {
+        this.uploading = false
+
+        // console.log('Uploaded a blob or file!', snapshot);
+        // console.log('Uploaded a blob or file!', snapshot.ref);
+        getDownloadURL(snapshot.ref).then((downloadURL) => {
+          // console.log('File available at', downloadURL);
+          this.sendAFile(downloadURL,this.File.name)
+          // TODO add to the chat
+        });
+      });
+    },
+    click1() {
+      this.$refs.fileToUpload.click();
+    },
+    sendAFile(fileURL, fileName) {
+      // Create a new post reference with an auto-generated id
+      const db = getDatabase();
+      const postListRef = ref(db, this.id + "/messages");
+      const newPostRef = push(postListRef);
+      set(newPostRef, {
+        file: true,
+        fileName: fileName,
+        fileURL: fileURL,
+        senderEmail: this.$store.state.user.user.userEmail,
+        senderName:
+          this.$store.state.user.user.firstName +
+          " " +
+          this.$store.state.user.user.lastName,
+        dateTime: this.formatDate(),
+      });
+    },
+    addAFile(newMessage) {
+      // console.log("Adding a New File",newMessage)
+      this.chatData.chat.chat.push({
+        fileURL: newMessage.fileURL,
+        fileName:newMessage.fileName,
+        message:newMessage.message,
+        file: newMessage.file,
+        time: newMessage.dateTime,
+        senderName: newMessage.senderName,
+        senderEmail: newMessage.senderEmail,
+        sender: newMessage.senderEmail,
+      });
+      this.chatInputMessage = "";
+
+      // Update scroll position
+      // Scroll to bottom
+      this.$nextTick(() => {
+        this.psToBottom();
+      });
+    },
+
+
+
+
     sendAMessage() {
       // Create a new post reference with an auto-generated id
       const db = getDatabase();
@@ -184,7 +289,7 @@ export default {
           this.$store.state.user.user.lastName,
         dateTime: this.formatDate(),
       });
-      this.chatInputMessage = ""
+      this.chatInputMessage = "";
     },
 
     addAMessage(newMessage) {
