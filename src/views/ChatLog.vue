@@ -95,10 +95,10 @@ export default {
             sender: msg.sender,
             messages: [
               {
-                file: msg.file,
-                fileName:msg.fileName,
-                url: msg.fileUrl,
                 msg: msg.message,
+                url: msg.fileURL,
+                fileName:msg.fileName,
+                file: msg.file,
                 time: msg.time,
               },
             ],

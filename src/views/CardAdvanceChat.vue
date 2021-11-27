@@ -256,8 +256,8 @@ export default {
       this.chatData.chat.chat.push({
         fileURL: newMessage.fileURL,
         fileName:newMessage.fileName,
-        message:newMessage.message,
         file: newMessage.file,
+        message:newMessage.message,
         time: newMessage.dateTime,
         senderName: newMessage.senderName,
         senderEmail: newMessage.senderEmail,

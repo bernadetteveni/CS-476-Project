@@ -28,8 +28,8 @@
     >
       Cancel this Chat
     </b-button>
-    <h5 class="mx-auto" style="width: 200px;">Appointment will end in:</h5>
     <div v-if="isAppointment">
+    <h5 class="mx-auto" style="width: 200px;">Appointment will end in:</h5>
       <flip-countdown :showDays="false" :showHours="false" :deadline="countdown" @timeElapsed="timeElapsedHandler"></flip-countdown>
     </div>
     <card-advance-chat :room="$route.params.roomID" :event="eventDocument" />
