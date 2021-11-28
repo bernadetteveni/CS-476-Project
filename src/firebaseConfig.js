@@ -2,6 +2,7 @@ import 'firebase/firestore'
 import { getFirestore ,collection } from "firebase/firestore"
 import { getDatabase, ref } from "firebase/database";
 // import 'firebase/storage'
+import { getFunctions } from "firebase/functions";
 
 import { initializeApp } from 'firebase/app';
 // Initialize Firebase
@@ -22,6 +23,7 @@ const firebaseConfig = {
 // const analytics = firebase.analytics()
 
 const db = getFirestore()
+const functions = getFunctions(app);
 
 // firebase collections
 const usersCollection = collection(db,'users')
@@ -41,6 +43,7 @@ export {
   // storageRef,
   // avatarsRef,
   db,
+  functions,
   usersCollection,
   appointmentCollection,
   realTimeDB,

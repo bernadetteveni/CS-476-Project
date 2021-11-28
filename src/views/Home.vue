@@ -9,13 +9,18 @@
     <div v-if="isStudent">STudent</div>
     <div v-else>GUI for Not a student</div>
     <h1 @click="getProfile">UPDATE PROFILE</h1>
+
+     <h1 @click="callFBFunction1">CALL FB FUNCTION</h1>
+     <h1 @click="callAI">CALL AI</h1>
    
+
   </div>
 </template>
 
 <script>
 import { BCard, BCardText, BLink } from 'bootstrap-vue'
-
+import { functions } from '@/firebaseConfig.js'
+import {  httpsCallable } from 'firebase/functions';
 
 export default {
   
@@ -25,6 +30,30 @@ export default {
     BLink,
   },
   methods : {
+    async callFBFunction1() {
+            // const addMessage = httpsCallable(functions, 'helloWorld');
+            const addMessage = httpsCallable(functions, 'addMessage');
+
+
+            const result = await addMessage({ text: "MESSAGE TO FIREBASE" })
+            console.log("RESULT FROM FIREBASE",(result))
+            // const data = result.data;
+            //...
+    },
+     async callAI() {
+            // const addMessage = httpsCallable(functions, 'dialogflowGateway');
+
+            const addMessage = httpsCallable(functions, 'dialogFlowMiddle');
+
+            const result = await addMessage({ 
+              sessionId: 'temp-session', // TODO make this be the users uid
+              queryInput: "update firebase"
+            })
+            console.log("RESULT FROM FIREBASE",(result))
+            // const data = result.data;
+            //...
+    },
+  
     updateTest () {
       console.log("hello from updates")
       store.dispatch('user/updateText')
