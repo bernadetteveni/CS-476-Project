@@ -22,6 +22,7 @@
         <div
           v-for="(msgData, index) in msgGrp.messages"
           class="chat-content"
+          :key="msgData.msg + index"
         >
           <div v-if="msgData.file">
             Filename: <b>{{ msgData.fileName }}</b>
