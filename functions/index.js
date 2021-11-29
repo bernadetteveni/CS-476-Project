@@ -1,38 +1,35 @@
 const functions = require("firebase-functions");
 const cors = require("cors")({origin: true});
 const admin = require("firebase-admin");
-const serviceAccount = require("./service-account.json");
+// const serviceAccount = require("./service-account.json");
 const dialogflow = require("dialogflow");
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://cs476project.firebaseio.com",
-});
+admin.initializeApp();
 
-exports.helloWorld = functions.https.onRequest(async (request, response) => {
-  cors(request, response, async () => {
-    functions.logger.info("Hello logs!", {structuredData: true});
-    response.json({result: "Hello from FIREBASE FUNCtion"});
-  });
-});
+// exports.helloWorld = functions.https.onRequest(async (request, response) => {
+//   cors(request, response, async () => {
+//     functions.logger.info("Hello logs!", {structuredData: true});
+//     response.json({result: "Hello from FIREBASE FUNCtion"});
+//   });
+// });
 
-exports.addMessage = functions.https.onRequest(async (request, response) => {
-  cors(request, response, async () => {
-    functions.logger.info("In AddAMessage",);
-    functions.logger.info(
-        "request.body.data.text",
-        request.body.data.text, {structuredData: true});
+// exports.addMessage = functions.https.onRequest(async (request, response) => {
+//   cors(request, response, async () => {
+//     functions.logger.info("In AddAMessage",);
+//     functions.logger.info(
+//         "request.body.data.text",
+//         request.body.data.text, {structuredData: true});
 
 
-    // functions.logger.info("Request", request, {structuredData: true});
-    // functions.logger.info("response", response, {structuredData: true});
-    // functions.logger.info("Hello logs!", {structuredData: true});
+//     // functions.logger.info("Request", request, {structuredData: true});
+//     // functions.logger.info("response", response, {structuredData: true});
+//     // functions.logger.info("Hello logs!", {structuredData: true});
 
-    response.json(
-        {result: "Hello2 from FIREBASE FUNCtion. Here is your imput text->" +
-      request.body.data.text});
-  });
-});
+//     response.json(
+//         {result: "Hello2 from FIREBASE FUNCtion. Here is your imput text->" +
+//       request.body.data.text});
+//   });
+// });
 
 exports.dialogflowFirebaseFulfillment =
 functions.https.onRequest((request, response) => {
@@ -128,11 +125,12 @@ exports.dialogFlowMiddle = functions.https.onRequest(
       cors(request, response, async () => {
         const queryInput = request.body.data.queryInput;
         const sessionId = request.body.data.sessionId;
+        const RTDBLocation = request.body.data.RTDBLocation;
 
-        functions.logger.info("request.body", request.body);
-        functions.logger.info("queryInput", queryInput);
-        functions.logger.info("sessionId", sessionId);
 
+        // functions.logger.info("request.body", request.body);
+        // functions.logger.info("queryInput", queryInput);
+        functions.logger.info("RTDBLocation", RTDBLocation);
 
         // Create a new session
         const projectId = "cs476project";
@@ -144,30 +142,65 @@ exports.dialogFlowMiddle = functions.https.onRequest(
           session: sessionPath,
           queryInput: {
             text: {
-              // The query to send to the dialogflow agent
               text: queryInput,
-              // The language used by the client (en-US)
               languageCode: "en-US",
             },
           },
         };
-        functions.logger.info("LINE 204");
 
         // Send request and log result
         const responses = await sessionClient.detectIntent(req);
-        functions.logger.info("Detected intent");
-
         const result = responses[0].queryResult;
-        functions.logger.info(`  Responses: ${responses}`);
-        functions.logger.info(`  Result: ${result}`);
+        // functions.logger.info("  Responses: ", JSON.stringify(responses), {structuredData: true});
+        functions.logger.info("  Result:", JSON.stringify(result), {structuredData: true});
+        // functions.logger.info(`  Query: ${result.queryText}`, {structuredData: true});
+        // functions.logger.info(`  Action: ${result.action}`, {structuredData: true});
+        // functions.logger.info(`  Response: ${result.fulfillmentText}`, {structuredData: true});
+        // if (result.intent) {
+        //   functions.logger.info(`  Intent: ${result.intent.displayName}`,{structuredData: true});
+        // } else {
+        //   functions.logger.info("  No intent matched.");
+        // }
 
-
-        functions.logger.info(`  Query: ${result.queryText}`);
-        functions.logger.info(`  Response: ${result.fulfillmentText}`);
-        if (result.intent) {
-          functions.logger.info(`  Intent: ${result.intent.displayName}`);
-        } else {
-          functions.logger.info("  No intent matched.");
+        // TODO Do actions here
+        if (result.action === "firebase.update") {
+          console.log("hello");
         }
+
+        // Add the response to the persons Ai Chat
+
+        // This works but overrides the whole location
+        // await admin.database().ref(RTDBLocation).set({
+        //   message: result.fulfillmentText,
+        //   senderEmail: "aiEmail@uregina.ca",
+        //   employeeEmail: "aiEmail@uregina.ca",
+        //   senderName: "AI Chatbot",
+        // });
+
+        // Works great, but need a ref to delete later
+        // await admin.database().ref(RTDBLocation).push().set({
+        //   message: result.fulfillmentText,
+        //   senderEmail: "aiEmail@uregina.ca",
+        //   employeeEmail: "aiEmail@uregina.ca",
+        //   senderName: "AI Chatbot",
+        // });
+        if (result.fulfillmentText == "CREATE-APPOINTMENT") {
+          await admin.database().ref(RTDBLocation).child("CREATE-APPOINTMENT").set({
+            message: result.fulfillmentText,
+            senderEmail: "aiEmail@uregina.ca",
+            employeeEmail: "aiEmail@uregina.ca",
+            senderName: "AI Chatbot",
+          });
+        } else {
+          await admin.database().ref(RTDBLocation).push().set({
+            message: result.fulfillmentText,
+            senderEmail: "aiEmail@uregina.ca",
+            employeeEmail: "aiEmail@uregina.ca",
+            senderName: "AI Chatbot",
+          });
+        }
+
+
+        response.json({result: result.fulfillmentText});
       });
     });

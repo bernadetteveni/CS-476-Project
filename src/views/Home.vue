@@ -47,6 +47,7 @@ export default {
 
             const result = await addMessage({ 
               sessionId: 'temp-session', // TODO make this be the users uid
+              // uid will be the ai chat room
               queryInput: "update firebase"
             })
             console.log("RESULT FROM FIREBASE",(result))

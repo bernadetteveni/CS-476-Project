@@ -117,10 +117,21 @@
         </div>
       </b-card>
     </div>
+    
+    <card-advance-chat 
+    style="
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 475px;
+    }"/>
+   
+    
   </div>
 </template>
 
 <script>
+  import CardAdvanceChat from "@/views/AiChatCard.vue";
 import Ripple from "vue-ripple-directive";
 import { heightFade } from "@core/directives/animations";
 import {
@@ -138,6 +149,7 @@ import {
 // v-for="index in 10" :key="index"
 export default {
   components: {
+    CardAdvanceChat,
     BFormDatepicker,
     BCard,
     BFormInput,
