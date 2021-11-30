@@ -3,7 +3,7 @@
 
 ## Table of Contents
 * [Members](#members)
-* [Installation](#installation)
+* [Application](#application)
 * [Proposed Project](#proposed‐project)
 * [Project Background](#project‐background)
 * [Business Need/Opportunity](#business‐need/opportunity)
