@@ -71,6 +71,13 @@ export default {
       return this.$store.state.user.user.SelectedStudentOrEmployee == 'Student'
     },
   },
+  created() {
+    if(this.$store.state.user.user.SelectedStudentOrEmployee == "Student"){
+      this.$router.push({ name: 'student-dashboard' })
+    } else {
+      this.$router.push({ name: 'employee-dashboard' })
+    }
+  },
   mounted() {
     console.log("in setup")
 
