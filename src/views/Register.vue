@@ -99,7 +99,7 @@
                   #default="{ errors }"
                   name="Password"
                   vid="password"
-                  rules="required"
+                  rules="required|min:6"
                 >
                   <b-input-group
                     class="input-group-merge"
