@@ -45,7 +45,7 @@
             Enter your email and we'll send you instructions to reset your password
           </b-card-text>
           <b-card-text class="mb-2" v-if="emailSent">
-            Email sent
+            A recovery email was sent to {{userEmail}}.
           </b-card-text>
 
           <!-- form -->
@@ -160,6 +160,7 @@ export default {
               // ..
             });
 
+            this.emailSent = true
 
         }
       })

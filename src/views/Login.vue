@@ -1,4 +1,22 @@
 <template>
+  <div>
+  <!-- toast -->
+    <b-toast
+      variant="danger"
+      id="example-toast5"
+      auto-hide-delay="10000"
+    >
+      <template #toast-title>
+        <div class="d-flex flex-grow-1 align-items-center mr-25">
+        
+          <strong class="mr-auto">UR QnA Login Error</strong>
+          <small class="text-muted">Now</small>
+        </div>
+      </template>
+      <span>{{loginError}}</span>
+    </b-toast>
+    <!-- END toast -->
+
   <div class="auth-wrapper auth-v2">
     <b-row class="auth-inner m-0">
       <!-- Brand logo-->
@@ -117,6 +135,7 @@
       <!-- /Login-->
     </b-row>
   </div>
+  </div>
 </template>
 
 <script>
@@ -137,6 +156,7 @@ import {
   BImg,
   BForm,
   BButton,
+  BToast,
 } from "bootstrap-vue";
 import { required, email } from "@validations";
 import { togglePasswordVisibility } from "@core/mixins/ui/forms";
@@ -156,6 +176,7 @@ export default {
     return { skin, isDark };
   },
   components: {
+    BToast,
     BRow,
     BCol,
     BLink,
@@ -183,6 +204,7 @@ export default {
       // validation rulesimport store from '@/store/index'
       required,
       email,
+      loginError: '',
     };
   },
   computed: {
@@ -224,16 +246,19 @@ export default {
             })
             
             }).catch((error)=>{
+              this.loginError = error.message
+              this.$bvToast.show('example-toast5')
               // Error for sign in with email
-              console.log(error.message);
-              console.log(error.code);
-              //TODO toastify
+              // console.log(error.message);
+              // console.log(error.code);
             })
           }).catch((error)=>{
+            this.loginError = error.message
+            this.$bvToast.show('example-toast5')
               // Error for setting persistence
-              console.log(error.message);
-              console.log(error.code);
-              //TODO toastify
+              // console.log(error.message);
+              // console.log(error.code);
+
           })
           
 
