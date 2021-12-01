@@ -271,8 +271,6 @@ export default {
 
         });
 
-      // TODO add newData to firestore (appoinments collection )
-      // Add a new document in collection "cities"
       const docRef = await addDoc(collection(db, "walkIn"), data.newData);
       // console.log("Document written to firestore with ID: ", docRef.id);
     },
@@ -290,8 +288,6 @@ export default {
 
         });
 
-      // TODO add newData to firestore (appoinments collection )
-      // Add a new document in collection "cities"
       const docRef = await addDoc(collection(db, "appointments"), data.newData);
       // console.log("Document written to firestore with ID: ", docRef.id);
     },
