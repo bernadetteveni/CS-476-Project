@@ -2,7 +2,6 @@
 
 ## Table of Contents
 * [Members](#members)
-* [Application](#application)
 * [Proposed Project](#proposed‐project)
 * [Project Background](#project‐background)
 * [Business Need/Opportunity](#business‐need/opportunity)
