@@ -11,9 +11,6 @@
 Bernadette Veninata,
 Zakiyyah Noorally
 
-## Application
-https://cs476project.web.app/
-
 ## Proposed Project
 UR QnA is a web-based chat system that will provide a convenient and efficient platform for University of Regina students to ask questions they have about the University during the COVID-19 pandemic. The chat system provides University of Regina students with the ability to obtain immediate answers to questions relating to the University using an online chatbot. If the chatbot is unable to assist them, users will have the ability to schedule an appointment with a front-desk staff member to chat on a one-on-one basis. 
 
