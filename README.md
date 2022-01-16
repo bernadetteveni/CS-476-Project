@@ -1,5 +1,4 @@
-# CS 476 Project
-## UR QnA Web Application
+# UR QnA Web Application
 
 ## Table of Contents
 * [Members](#members)
